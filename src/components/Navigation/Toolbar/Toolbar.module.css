@@ -1,0 +1,23 @@
+/* Mobile First toolbar */
+
+.Toolbar {
+    width: 100%;
+    height: 56px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #703B09;
+    /* display elems in flex, let always some space inbetween, centered, 20px padding on left and right */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    /* toolbar is sized correctly, even with padding */
+    box-sizing: border-box;
+    /* index less than backdrop */
+    z-index: 90; 
+}
+
+.Toolbar nav {
+    height: 100%;
+}

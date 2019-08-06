@@ -1,4 +1,4 @@
 .Content {
-    margin-top: 16px;
-    margin-bottom: 16px;
+    /* 16px + 56 of toolbar */
+    margin-top: 72px;
 }
