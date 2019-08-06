@@ -15,9 +15,9 @@ export default class BurgerBuilder extends React.Component {
     // The ingredients object keys, should match with the ones in BurguerIngredient.
     state = {
         ingredients : {
-            salad: 1,
-            meat : 2,
-            cheese: 2,
+            salad: 0,
+            meat : 0,
+            cheese: 0,
             bacon : 0
         },
         totalPrice : 0
@@ -63,6 +63,7 @@ export default class BurgerBuilder extends React.Component {
                     addIngredient={this.addIngredientHandler}
                     removeIngredient={this.removeIngredientHandler}
                     disabled={disableInfo}
+                    price={this.state.totalPrice}
                 />
             </React.Fragment>
         );
