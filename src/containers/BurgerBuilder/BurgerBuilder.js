@@ -79,20 +79,12 @@ export default class BurgerBuilder extends React.Component {
             disableInfo[key] = disableInfo[key] <= 0
         }
 
-        //Do we have to show the modal?
-        // const modal = null
-        const isPurchasing = this.state.purchasing
-        const modal = isPurchasing ?
-            (<Modal>
-                <OrderSummary ingredients={this.state.ingredients}/>
-            </Modal>
-            )
-            : null
-        console.log(modal)
-
         return (
             <React.Fragment>
-                {modal}
+                {/* To show modal, we use css animation, and the prop passed to modal. */}
+                <Modal show={this.state.purchasing}>
+                    <OrderSummary ingredients={this.state.ingredients}/>
+                </Modal>
                 <Burger ingredients={this.state.ingredients}/>
                 <BuildControls 
                     addIngredient={this.addIngredientHandler}
