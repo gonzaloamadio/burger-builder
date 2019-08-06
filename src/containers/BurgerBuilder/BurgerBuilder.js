@@ -42,6 +42,16 @@ export default class BurgerBuilder extends React.Component {
         this.setState({purchasing: true})
     }
 
+    // Handle Click in Backdrop
+    purchaseCancelHandler = ()  => {
+        this.setState({purchasing: false})
+    }
+
+    // From Seeing the order, to the real checkout.
+    checkoutHandler = () => {
+        alert('Burguer bought.')
+    }
+
     // Handler passed down to the controls, that add an ingredient.
     addIngredientHandler = (type) => {
         const updatedIngredients = {
@@ -82,8 +92,12 @@ export default class BurgerBuilder extends React.Component {
         return (
             <React.Fragment>
                 {/* To show modal, we use css animation, and the prop passed to modal. */}
-                <Modal show={this.state.purchasing}>
-                    <OrderSummary ingredients={this.state.ingredients}/>
+                <Modal show={this.state.purchasing} modalClosed={this.purchaseCancelHandler}>
+                    <OrderSummary 
+                        ingredients={this.state.ingredients}
+                        cancelled={this.purchaseCancelHandler}
+                        checkout={this.checkoutHandler}
+                        totalPrice={this.state.totalPrice}/>
                 </Modal>
                 <Burger ingredients={this.state.ingredients}/>
                 <BuildControls 

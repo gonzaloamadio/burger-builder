@@ -1,0 +1,9 @@
+.Backdrop {
+    width: 100%; /* cover all page */
+    height: 100%;
+    position: fixed; /* stay at position even if we scroll */
+    z-index: 100; /* Above elements, under modal */
+    left: 0; /* left and top, to position in top left corner */
+    top: 0;
+    background-color: rgba(0,0,0,0.5);
+}
