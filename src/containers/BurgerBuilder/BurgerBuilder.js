@@ -1,6 +1,8 @@
 import React from 'react';
 import Burger from '../../components/Burger/Burger'
 import BuildControls from '../../components/Burger/BuildControls/BuildControls'
+import Modal from '../../components/UI/Modal/Modal'
+import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary'
 
 // Statefull component where we will manage logic about building the burguer.
 
@@ -20,7 +22,24 @@ export default class BurgerBuilder extends React.Component {
             cheese: 0,
             bacon : 0
         },
-        totalPrice : 0
+        totalPrice : 0,
+        purchasable: false, // Dis/Enable checkout button
+        purchasing: false,  // Are we checking out? Button clicked
+    }
+
+    // If there is at least one ingredient, we can proceed to checkout.
+    // With this state, control if proceed button is disabled or not.
+    updatePurchasableState = updatedIngredients => {
+        let total = 0
+        for (let k in updatedIngredients){
+            total += updatedIngredients[k]
+        }
+        this.setState({purchasable: total > 0})
+    }
+
+    // Handler that manages proceed to checkout button click.
+    purchaseHandler = () => {
+        this.setState({purchasing: true})
     }
 
     // Handler passed down to the controls, that add an ingredient.
@@ -31,6 +50,9 @@ export default class BurgerBuilder extends React.Component {
         updatedIngredients[type] = updatedIngredients[type] + 1
         const newTotalPrice = this.state.totalPrice + INGREDIENT_PRICES[type]
         this.setState({totalPrice:newTotalPrice, ingredients:updatedIngredients})
+        // As React bundles this 2 setState methods, we need to pass ingredients
+        // as argument, if not it will make calculations with the old state.
+        this.updatePurchasableState(updatedIngredients)
     }
 
     // Handler passed down to the controls, that removes an ingredient.
@@ -43,6 +65,7 @@ export default class BurgerBuilder extends React.Component {
             const newTotalPrice = this.state.totalPrice - INGREDIENT_PRICES[type]
             this.setState({totalPrice:newTotalPrice, ingredients:updatedIngredients})
         }
+        this.updatePurchasableState(updatedIngredients)
     }
 
     render() {
@@ -56,14 +79,28 @@ export default class BurgerBuilder extends React.Component {
             disableInfo[key] = disableInfo[key] <= 0
         }
 
+        //Do we have to show the modal?
+        // const modal = null
+        const isPurchasing = this.state.purchasing
+        const modal = isPurchasing ?
+            (<Modal>
+                <OrderSummary ingredients={this.state.ingredients}/>
+            </Modal>
+            )
+            : null
+        console.log(modal)
+
         return (
             <React.Fragment>
+                {modal}
                 <Burger ingredients={this.state.ingredients}/>
                 <BuildControls 
                     addIngredient={this.addIngredientHandler}
                     removeIngredient={this.removeIngredientHandler}
                     disabled={disableInfo}
+                    purchasable={this.state.purchasable}
                     price={this.state.totalPrice}
+                    purchasing={this.purchaseHandler}
                 />
             </React.Fragment>
         );
