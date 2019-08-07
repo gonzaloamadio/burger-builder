@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import classes from './Layout.module.css'
-import Toolbar from '../Navigation/Toolbar/Toolbar'
-import SideDrawer from '../Navigation/SideDrawer/SideDrawer'
+import Toolbar from '../../components/Navigation/Toolbar/Toolbar'
+import SideDrawer from '../../components/Navigation/SideDrawer/SideDrawer'
 
 // We use state here to manage/coordinate which components to show and hide.
 // For example, nav items.

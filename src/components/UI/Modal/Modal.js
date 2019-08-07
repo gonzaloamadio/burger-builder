@@ -22,4 +22,5 @@ const Modal = (props) => {
     )
 }
 
-export default Modal
+// If modal is not show (props.show), do not re render. Optimization
+export default React.memo(Modal)
