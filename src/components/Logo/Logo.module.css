@@ -1,7 +1,10 @@
 .Logo {
     background-color: white;
     padding: 8px;
-    height: 80%;
+    /* We make logo take 100% of where we embed it. Restriction of actual size will be made
+    in the place where we embed it.
+    Will be wrapped into a div with the heigh required */
+    height: 100%;
     /* So heigh include padding */
     box-sizing: border-box;
     border-radius: 3px;
