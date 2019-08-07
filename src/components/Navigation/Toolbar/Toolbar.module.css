@@ -25,3 +25,10 @@
 .Logo {
     height: 80%;
 }
+
+/* For small devices, do not show elements. We have Side Menu */
+@media (max-width: 499px) {
+    .DesktopOnly {
+        display: none;
+    }
+}
