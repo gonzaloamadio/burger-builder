@@ -1,0 +1,35 @@
+.SideDrawer {
+    /* Fix menu even if scroll */
+    position: fixed;
+    width: 280px;
+    /* Even for narrow devices, do not take all screen */
+    max-width: 70%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    /* Higher number than backdrop */
+    z-index: 200;
+    /* stands out and see all elems */
+    background-color: white;
+    /* 32 top to botton, 16px left to right */
+    padding: 32px 16px;
+    /* adjust size to padding */
+    box-sizing: border-box;
+    transition: transform 0.3s ease-out;
+}
+
+/* If our device exceeds 500px, do not show */
+@media (min-width: 500px) {
+    .SideDrawer {
+        display: none;
+    }
+}
+
+.Open {
+    /* Shift SideDrawer to position defined in class .SideDrawer */
+    transform: translateX(0);
+}
+
+.Close {
+    transform: translateX(-100%);
+}
