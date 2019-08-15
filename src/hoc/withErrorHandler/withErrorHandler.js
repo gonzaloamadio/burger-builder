@@ -23,7 +23,7 @@ const withErrorHandler = (WrappedComponent, axios) => {
         // be executed and set. This method is executed BEFORE children are rendered.
         // As we are registering interceptors and not caussing side effects, we can do it.
         componentWillMount(){
-            axios.interceptors.response.use(res => res, error => {
+            this.resInterceptor = axios.interceptors.response.use(res => res, error => {
                 /* Set up axios listener. Set up global interceptor
                 which allow us to handle errors.
 
@@ -34,11 +34,17 @@ const withErrorHandler = (WrappedComponent, axios) => {
                 this.setState({error:error})
             })
             // When a req is sent, clear error.
-            axios.interceptors.request.use(req => {
+            this.reqInterceptor = axios.interceptors.request.use(req => {
                 this.setState({error:null})
                 return req
             })
+        }
 
+        componentWillUnmount () {
+            // Remove/Unmount interceptors so they do not stay in memory 
+            // when ther are not needed anymore.
+            axios.interceptors.request.eject(this.reqInterceptor)
+            axios.interceptors.response.eject(this.resInterceptor)
         }
 
         render() {
