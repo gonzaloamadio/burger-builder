@@ -19,16 +19,24 @@ const INGREDIENT_PRICES = {
 class BurgerBuilder extends React.Component {
     // The ingredients object keys, should match with the ones in BurguerIngredient.
     state = {
-        ingredients : {
-            salad: 0,
-            meat : 0,
-            cheese: 0,
-            bacon : 0
-        },
+        ingredients : null,
         totalPrice : 0,
         purchasable: false, // Dis/Enable checkout button
         purchasing: false,  // Are we checking out? Button clicked
-        loading : false
+        loading : false,
+        error : false
+    }
+
+    componentDidMount () {
+        axios.get('https://burguer-builder-94096.firebaseio.com/ingredients.json')
+        .then(response => {
+            // This will load async. So if we have part of the UI that depends on
+            // this data, we should check if this exists before rendering them.
+            this.setState({ingredients : response.data})
+        })
+        .catch(err => {
+            this.setState({error:true})
+        })
     }
 
     // If there is at least one ingredient, we can proceed to checkout.
@@ -124,21 +132,15 @@ class BurgerBuilder extends React.Component {
             disableInfo[key] = disableInfo[key] <= 0
         }
 
-        return (
-            <React.Fragment>
-                {/* To show modal, we use css animation, and the prop passed to modal. */}
-                <Modal show={this.state.purchasing} modalClosed={this.purchaseCancelHandler}>
-                    {this.state.loading ?
-                    <Spinner />
-                    :
-                    <OrderSummary 
-                        ingredients={this.state.ingredients}
-                        cancelled={this.purchaseCancelHandler}
-                        checkout={this.purchaseCheckoutHandler}
-                        totalPrice={this.state.totalPrice}/>
-                    }
-                </Modal>
-                <Burger ingredients={this.state.ingredients}/>
+        // Is http beeing sent?                
+
+        // Are ingredients loaded? Set components that use them.
+        let orderSummary = null
+        let burger = this.state.error ? <p>Ingredients can not be retrieved.</p> : <Spinner />
+        if (this.state.ingredients) {
+            burger = (
+                <React.Fragment>
+                <Burger ingredients={this.state.ingredients}/> ,
                 <BuildControls 
                     addIngredient={this.addIngredientHandler}
                     removeIngredient={this.removeIngredientHandler}
@@ -147,6 +149,26 @@ class BurgerBuilder extends React.Component {
                     price={this.state.totalPrice}
                     purchasing={this.purchaseHandler} // Use to show modal, change state
                 />
+                </React.Fragment>
+            )
+
+            orderSummary = <OrderSummary 
+                ingredients={this.state.ingredients}
+                cancelled={this.purchaseCancelHandler}
+                checkout={this.purchaseCheckoutHandler}
+                totalPrice={this.state.totalPrice}/>
+        }
+
+        if (this.state.loading) { orderSummary = <Spinner />}
+
+
+        return (
+            <React.Fragment>
+                {/* To show modal, we use css animation, and the prop passed to modal. */}
+                <Modal show={this.state.purchasing} modalClosed={this.purchaseCancelHandler}>
+                    {orderSummary}
+                </Modal>
+                {burger}
             </React.Fragment>
         );
     }

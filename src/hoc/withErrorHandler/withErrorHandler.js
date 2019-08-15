@@ -13,7 +13,16 @@ const withErrorHandler = (WrappedComponent, axios) => {
         state = {
             error : null
         }    
-        componentDidMount(){
+
+        // We use componentWillMount, but is deprecated. So instead, 
+        // we can do this in the constructor. The idea only is creating this 
+        // interceptors when the component is created.
+        // If we do it in componentDidMount, that lifeCycle will be executed
+        // AFTER all the child componentDidMount methods has finished. So if
+        // in one of the children componentDidMount there is an error, this will never
+        // be executed and set. This method is executed BEFORE children are rendered.
+        // As we are registering interceptors and not caussing side effects, we can do it.
+        componentWillMount(){
             axios.interceptors.response.use(res => res, error => {
                 /* Set up axios listener. Set up global interceptor
                 which allow us to handle errors.
