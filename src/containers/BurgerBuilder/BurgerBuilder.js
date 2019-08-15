@@ -3,6 +3,8 @@ import Burger from '../../components/Burger/Burger'
 import BuildControls from '../../components/Burger/BuildControls/BuildControls'
 import Modal from '../../components/UI/Modal/Modal'
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary'
+import axios from '../../api/axios-order'
+import Spinner from '../../components/UI/Spinner/Spinner'
 
 // Statefull component where we will manage logic about building the burguer.
 
@@ -25,6 +27,7 @@ export default class BurgerBuilder extends React.Component {
         totalPrice : 0,
         purchasable: false, // Dis/Enable checkout button
         purchasing: false,  // Are we checking out? Button clicked
+        loading : false
     }
 
     // If there is at least one ingredient, we can proceed to checkout.
@@ -48,8 +51,39 @@ export default class BurgerBuilder extends React.Component {
     }
 
     // From Seeing the order, to the real checkout.
-    checkoutHandler = () => {
-        alert('Burguer bought.')
+    purchaseCheckoutHandler = () => {
+        // alert('Burguer bought.')
+
+        this.setState({loading: true})
+
+        const order = {
+            ingredients : this.state.ingredients,
+            price : this.state.totalPrice, // This should be calculated in server to avoid manipulation.
+            customer : {
+                name : 'Gonzalo',
+                email: 'gon@zalo.com',
+                address : {
+                    street : 'Brown',
+                    number : '1326',
+                    zipCode : '2500',
+                    country : 'Argentina'
+                }
+            },
+            deliveryMethod : 'fastest'
+        }
+        // At this instance, we send the info to a DB.
+        // Then we should add a checkout page, and do it better.
+        // We need to add .json, cause of firebase.
+        axios.post('/orders.json', order)
+            .then(response => {
+                console.log(response)
+                this.setState({loading : false , purchasing : false})
+            })
+            .catch(error => {
+                console.log(error)
+                this.setState({loading: false , purchasing : false})
+
+            })
     }
 
     // Handler passed down to the controls, that add an ingredient.
@@ -93,11 +127,15 @@ export default class BurgerBuilder extends React.Component {
             <React.Fragment>
                 {/* To show modal, we use css animation, and the prop passed to modal. */}
                 <Modal show={this.state.purchasing} modalClosed={this.purchaseCancelHandler}>
+                    {this.state.loading ?
+                    <Spinner />
+                    :
                     <OrderSummary 
                         ingredients={this.state.ingredients}
                         cancelled={this.purchaseCancelHandler}
-                        checkout={this.checkoutHandler}
+                        checkout={this.purchaseCheckoutHandler}
                         totalPrice={this.state.totalPrice}/>
+                    }
                 </Modal>
                 <Burger ingredients={this.state.ingredients}/>
                 <BuildControls 
@@ -106,7 +144,7 @@ export default class BurgerBuilder extends React.Component {
                     disabled={disableInfo}
                     purchasable={this.state.purchasable}
                     price={this.state.totalPrice}
-                    purchasing={this.purchaseHandler}
+                    purchasing={this.purchaseHandler} // Use to show modal, change state
                 />
             </React.Fragment>
         );
