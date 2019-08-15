@@ -5,6 +5,7 @@ import Modal from '../../components/UI/Modal/Modal'
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary'
 import axios from '../../api/axios-order'
 import Spinner from '../../components/UI/Spinner/Spinner'
+import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler'
 
 // Statefull component where we will manage logic about building the burguer.
 
@@ -15,7 +16,7 @@ const INGREDIENT_PRICES = {
     bacon : 0.7
 }
 
-export default class BurgerBuilder extends React.Component {
+class BurgerBuilder extends React.Component {
     // The ingredients object keys, should match with the ones in BurguerIngredient.
     state = {
         ingredients : {
@@ -151,3 +152,4 @@ export default class BurgerBuilder extends React.Component {
     }
 }
 
+export default withErrorHandler(BurgerBuilder, axios)
