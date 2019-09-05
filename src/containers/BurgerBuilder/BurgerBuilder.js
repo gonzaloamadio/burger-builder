@@ -28,10 +28,15 @@ class BurgerBuilder extends React.Component {
     }
 
     componentDidMount () {
+        // Initialize ingredients from DB.
+        // If we pass ingredients to another component, we should first check if they exist.
+        // Down in this file, se can see: if (this.state.ingredients) 
+        // before passing ingredients to OrderSummary for example.
         axios.get('https://burguer-builder-94096.firebaseio.com/ingredients.json')
         .then(response => {
             // This will load async. So if we have part of the UI that depends on
             // this data, we should check if this exists before rendering them.
+            // If not, show spinner or whatever.
             this.setState({ingredients : response.data})
         })
         .catch(err => {
@@ -135,6 +140,7 @@ class BurgerBuilder extends React.Component {
         // Is http beeing sent?                
 
         // Are ingredients loaded? Set components that use them.
+        // We should check this, because we are initializing from DB, we fetch them.
         let orderSummary = null
         let burger = this.state.error ? <p>Ingredients can not be retrieved.</p> : <Spinner />
         if (this.state.ingredients) {
