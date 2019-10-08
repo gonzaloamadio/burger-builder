@@ -1,0 +1,13 @@
+.CheckoutSummary {
+  text-align: center;
+  width: 80%;
+  /* Auto to center the div, or element. */
+  margin: auto;
+}
+
+/* Limit the width */
+@media (min-width: 600px) {
+  .CheckoutSummary {
+    width: 500px;
+  }
+}
