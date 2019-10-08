@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 
 import Layout from './hoc/Layout/Layout';
 import BurgerBuilder from './containers/BurgerBuilder/BurgerBuilder';
@@ -9,10 +9,12 @@ function App() {
   return (
     <div>
       <Layout>
-        {' '}
-        {/* Toolbar and render childrens  */}
-        <BurgerBuilder /> {/*  Pages  */}
-        <Checkout />
+        <Switch>
+          <Route path="/checkout" component={Checkout} />
+          {/* exact is not neccessary but we leave it. */}
+          <Route path="/" exact component={BurgerBuilder} />
+        </Switch>
+        {/* <Route path="" component={} /> */}
       </Layout>
     </div>
   );
