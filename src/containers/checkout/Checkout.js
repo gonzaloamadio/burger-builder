@@ -9,24 +9,30 @@ import ContactData from './ContactData/ContactData';
 // When the user continue, we want to load the contact form.
 export default class Checkout extends Component {
   state = {
-    ingredients: {
-      salad: 1,
-      meat: 1
-    }
+    ingredients: null,
+    totalPrice: 0
   };
 
-  // We use DidMount because when we load the component, it is mounted.
-  // It is not nested somewhere, se it is mounted again by the router when
-  // we load it.
-  componentDidMount() {
-    // Includes the ?
+  // Change for WillMount because:
+  // We have access to the props before we render the childs
+  // and we can already set the state. If not, we will try to
+  // render ContactData with null props, and it will be an error.
+  componentWillMount() {
     const query = new URLSearchParams(this.props.location.search);
     const ingredients = {};
+    let price = 0;
     for (let param of query.entries()) {
-      // ['salad', '2']
-      ingredients[param[0]] = +param[1];
+      // param == ['salad', '2']
+
+      // WORKAROUND for this. Later we will do it better
+      if (param[0] === 'price') {
+        price = param[1];
+      } else {
+        ingredients[param[0]] = +param[1];
+      }
     }
     this.setState({ ingredients: ingredients });
+    this.setState({ totalPrice: price });
   }
 
   checkoutCancelledHandler = () => {
@@ -50,7 +56,12 @@ export default class Checkout extends Component {
          is not re rendered, and the summary stay the same. */}
         <Route
           path={this.props.match.path + '/contact-data'}
-          component={ContactData}
+          render={() => (
+            <ContactData
+              ingredients={this.state.ingredients}
+              price={this.state.totalPrice}
+            />
+          )}
         />
       </div>
     );

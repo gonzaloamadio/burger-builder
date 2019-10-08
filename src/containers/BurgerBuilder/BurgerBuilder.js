@@ -67,7 +67,6 @@ class BurgerBuilder extends React.Component {
     // From Seeing the order, to the real checkout.
     purchaseCheckoutHandler = () => {
 
-
         // As this is part of the routable area of the project
         // we have access to routers props: history, match.
         // Only this one, that it is loaded through a Route 
@@ -82,45 +81,13 @@ class BurgerBuilder extends React.Component {
             // Relevant for example for whitespaces, and so on.
             queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]))
         }
+        // THIS IS COMPLETELY WRONG, ONLY FOR TESTING PURPOSE
+        queryParams.push('price=' + this.state.totalPrice)
         const queryString = queryParams.join('&')
         this.props.history.push({
             pathname: '/checkout',
             search: '?' + queryString
         })
-
-
-        // ///// OLDE CONTENT ///// //
-
-        // this.setState({loading: true})
-
-        // const order = {
-        //     ingredients : this.state.ingredients,
-        //     price : this.state.totalPrice, // This should be calculated in server to avoid manipulation.
-        //     customer : {
-        //         name : 'Gonzalo',
-        //         email: 'gon@zalo.com',
-        //         address : {
-        //             street : 'Brown',
-        //             number : '1326',
-        //             zipCode : '2500',
-        //             country : 'Argentina'
-        //         }
-        //     },
-        //     deliveryMethod : 'fastest'
-        // }
-        // // At this instance, we send the info to a DB.
-        // // Then we should add a checkout page, and do it better.
-        // // We need to add .json, cause of firebase.
-        // axios.post('/orders.json', order)
-        //     .then(response => {
-        //         console.log(response)
-        //         this.setState({loading : false , purchasing : false})
-        //     })
-        //     .catch(error => {
-        //         console.log(error)
-        //         this.setState({loading: false , purchasing : false})
-
-        //     })
     }
 
     // Handler passed down to the controls, that add an ingredient.
