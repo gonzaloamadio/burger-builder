@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import { Route } from 'react-router-dom';
 
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
+import ContactData from './ContactData/ContactData';
 
 // We want to have a summary of what the user is about to buy.
 // Button to cancel and go back, and another to continue.
@@ -38,11 +40,17 @@ export default class Checkout extends Component {
   render() {
     return (
       <div>
-        {/* Ingredients are coming from ? --> Routing!, for now, dummy */}
         <CheckoutSummary
           ingredients={this.state.ingredients}
           checkoutContinued={this.checkoutContinuedHandler}
           checkoutCancelled={this.checkoutCancelledHandler}
+        />
+        {/* Depends on path we are + contact-data */}
+        {/* Despite we overwrite the url, state is not modified, so component
+         is not re rendered, and the summary stay the same. */}
+        <Route
+          path={this.props.match.path + '/contact-data'}
+          component={ContactData}
         />
       </div>
     );
