@@ -76,7 +76,17 @@ class BurgerBuilder extends React.Component {
         // has no access to them. We have to pass them manually or 
         // with the withRouter HOC provided by react-router-dom.
 
-        this.props.history.push('/checkout')
+        const queryParams = []
+        for (let i in this.state.ingredients) {
+            // Encode element so they can be used in a URL.
+            // Relevant for example for whitespaces, and so on.
+            queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]))
+        }
+        const queryString = queryParams.join('&')
+        this.props.history.push({
+            pathname: '/checkout',
+            search: '?' + queryString
+        })
 
 
         // ///// OLDE CONTENT ///// //

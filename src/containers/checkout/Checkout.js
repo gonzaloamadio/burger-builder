@@ -13,6 +13,20 @@ export default class Checkout extends Component {
     }
   };
 
+  // We use DidMount because when we load the component, it is mounted.
+  // It is not nested somewhere, se it is mounted again by the router when
+  // we load it.
+  componentDidMount() {
+    // Includes the ?
+    const query = new URLSearchParams(this.props.location.search);
+    const ingredients = {};
+    for (let param of query.entries()) {
+      // ['salad', '2']
+      ingredients[param[0]] = +param[1];
+    }
+    this.setState({ ingredients: ingredients });
+  }
+
   checkoutCancelledHandler = () => {
     this.props.history.goBack();
   };
