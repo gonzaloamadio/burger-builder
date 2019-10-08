@@ -66,38 +66,51 @@ class BurgerBuilder extends React.Component {
 
     // From Seeing the order, to the real checkout.
     purchaseCheckoutHandler = () => {
-        // alert('Burguer bought.')
 
-        this.setState({loading: true})
 
-        const order = {
-            ingredients : this.state.ingredients,
-            price : this.state.totalPrice, // This should be calculated in server to avoid manipulation.
-            customer : {
-                name : 'Gonzalo',
-                email: 'gon@zalo.com',
-                address : {
-                    street : 'Brown',
-                    number : '1326',
-                    zipCode : '2500',
-                    country : 'Argentina'
-                }
-            },
-            deliveryMethod : 'fastest'
-        }
-        // At this instance, we send the info to a DB.
-        // Then we should add a checkout page, and do it better.
-        // We need to add .json, cause of firebase.
-        axios.post('/orders.json', order)
-            .then(response => {
-                console.log(response)
-                this.setState({loading : false , purchasing : false})
-            })
-            .catch(error => {
-                console.log(error)
-                this.setState({loading: false , purchasing : false})
+        // As this is part of the routable area of the project
+        // we have access to routers props: history, match.
+        // Only this one, that it is loaded through a Route 
+        // component has the access. Nested components, for example
+        // burger, that is loaded in the render of this component,
+        // has no access to them. We have to pass them manually or 
+        // with the withRouter HOC provided by react-router-dom.
 
-            })
+        this.props.history.push('/checkout')
+
+
+        // ///// OLDE CONTENT ///// //
+
+        // this.setState({loading: true})
+
+        // const order = {
+        //     ingredients : this.state.ingredients,
+        //     price : this.state.totalPrice, // This should be calculated in server to avoid manipulation.
+        //     customer : {
+        //         name : 'Gonzalo',
+        //         email: 'gon@zalo.com',
+        //         address : {
+        //             street : 'Brown',
+        //             number : '1326',
+        //             zipCode : '2500',
+        //             country : 'Argentina'
+        //         }
+        //     },
+        //     deliveryMethod : 'fastest'
+        // }
+        // // At this instance, we send the info to a DB.
+        // // Then we should add a checkout page, and do it better.
+        // // We need to add .json, cause of firebase.
+        // axios.post('/orders.json', order)
+        //     .then(response => {
+        //         console.log(response)
+        //         this.setState({loading : false , purchasing : false})
+        //     })
+        //     .catch(error => {
+        //         console.log(error)
+        //         this.setState({loading: false , purchasing : false})
+
+        //     })
     }
 
     // Handler passed down to the controls, that add an ingredient.
