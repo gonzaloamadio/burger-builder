@@ -1,0 +1,28 @@
+.Input {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.Label {
+  font-weight: bold;
+  display: block; /* Take full width, take its own line, its own row in our html */
+  margin-bottom: 8px;
+}
+
+/* We can genereta classes for each type of element. For now this generic one. */
+.InputElement {
+  outline: none;
+  border: 1px solid #ccc;
+  background-color: white;
+  font: inherit;
+  padding: 6px 10px;
+  display: block;
+  width: 100%;
+  box-sizing: border-box; /* So width is calculated correctly, if not crashes with border */
+}
+
+.InputElement:focus {
+  outline: none;
+  background-color: #ccc;
+}
