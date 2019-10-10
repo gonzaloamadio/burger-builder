@@ -7,7 +7,10 @@ const input = props => {
   // By default , all have inputElement class.
   const inputClasses = [classes.InputElement];
 
-  props.invalid && props.shouldValidate && inputClasses.push(classes.Invalid);
+  props.invalid &&
+    props.shouldValidate &&
+    props.touched &&
+    inputClasses.push(classes.Invalid);
 
   switch (props.elementType) {
     case 'input':
