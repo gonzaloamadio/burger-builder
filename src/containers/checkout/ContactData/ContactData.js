@@ -104,6 +104,26 @@ export default class ContactData extends Component {
       });
   };
 
+  // This method is attached to an event listener (input element).
+  // So we will receive an event.
+  // inputChangeHandler = (event) => {
+  // Also we need two way binding to update the input, so we need to know
+  // which element are we in. So we add the inputIdentifier param (the name does not matter)
+  // and also we need to adjust how we pass this handler to the <Input> to an arrow function
+  inputChangeHandler = (event, inputIdentifier) => {
+    const orderFormUpdated = {
+      // If we do this only, it will not be a deep clone. I.e. the nested elements will be not cloned
+      // but only the pointers, so if I change something there i will still mutate the original state.
+      // Because the object in my copied object and the object in the state would still be equal.
+      ...this.state.orderForm
+    };
+    // So we need to do this to. Clone again the second level, i.e. {OrderForm: {name: {THIS_ONE}, email:{THIS_ONE} }}
+    const updatedFormElement = { ...orderFormUpdated[inputIdentifier] };
+    updatedFormElement.value = event.target.value;
+    orderFormUpdated[inputIdentifier] = updatedFormElement;
+    this.setState({ orderForm: orderFormUpdated });
+  };
+
   render() {
     const formElementsArray = [];
     for (let key in this.state.orderForm) {
@@ -121,6 +141,7 @@ export default class ContactData extends Component {
             elementType={formElement.config.elementType}
             elementConfig={formElement.config.elementConfig}
             value={formElement.config.value}
+            changed={event => this.inputChangeHandler(event, formElement.id)}
           />
         ))}
         <Button btnType="Success" clicked={this.orderHandler}>
