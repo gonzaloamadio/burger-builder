@@ -19,7 +19,11 @@ export default class ContactData extends Component {
           type: 'text',
           placeholder: 'Your Name'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true
+        },
+        valid: false
       },
       street: {
         elementType: 'input',
@@ -35,7 +39,11 @@ export default class ContactData extends Component {
           type: 'email',
           placeholder: 'Your E-Mail'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true
+        },
+        valid: false
       },
       zipCode: {
         elementType: 'input',
@@ -43,7 +51,13 @@ export default class ContactData extends Component {
           type: 'text',
           placeholder: 'Postal Code'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true,
+          minLength: 5,
+          maxLength: 5
+        },
+        valid: false
       },
       country: {
         elementType: 'input',
@@ -51,7 +65,11 @@ export default class ContactData extends Component {
           type: 'text',
           placeholder: 'Country'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true
+        },
+        valid: false
       },
       deliveryMethod: {
         elementType: 'select',
@@ -73,23 +91,18 @@ export default class ContactData extends Component {
 
     this.setState({ loading: true });
 
+    // We need to extract the values, that we have in our state. In value field.
+    const formData = {};
+    for (let key in this.state.orderForm) {
+      // Transform to: {email: '<email_form_value>', . . . }
+      formData[key] = this.state.orderForm[key].value;
+    }
+
     const order = {
       ingredients: this.props.ingredients,
       price: this.props.price, // This should be calculated in server to avoid manipulation.
-      customer: {
-        name: 'Gonzalo',
-        email: 'gon@zalo.com',
-        address: {
-          street: 'Brown',
-          number: '1326',
-          zipCode: '2500',
-          country: 'Argentina'
-        }
-      },
-      deliveryMethod: 'fastest'
+      orderData: formData
     };
-    // At this instance, we send the info to a DB.
-    // Then we should add a checkout page, and do it better.
     // We need to add .json, cause of firebase.
     axios
       .post('/orders.json', order)
@@ -103,6 +116,22 @@ export default class ContactData extends Component {
         this.setState({ loading: false });
       });
   };
+
+  checkValidity(value, rules) {
+    let isValid = true;
+
+    if (rules.required) {
+      isValid = value.trim() !== '' && isValida;
+    }
+    if (rules.minLength) {
+      isValid = value.length >= rules.minLength && isValida;
+    }
+    if (rules.maxLength) {
+      isValid = value.length <= rules.maxLength && isValida;
+    }
+
+    return isValid;
+  }
 
   // This method is attached to an event listener (input element).
   // So we will receive an event.
@@ -120,6 +149,12 @@ export default class ContactData extends Component {
     // So we need to do this to. Clone again the second level, i.e. {OrderForm: {name: {THIS_ONE}, email:{THIS_ONE} }}
     const updatedFormElement = { ...orderFormUpdated[inputIdentifier] };
     updatedFormElement.value = event.target.value;
+    // Check validity, pass value and rules.
+    updatedFormElement.valid = this.checkValidity(
+      updatedFormElement.value,
+      updatedFormElement.validation
+    );
+    console.log(updatedFormElement.valid);
     orderFormUpdated[inputIdentifier] = updatedFormElement;
     this.setState({ orderForm: orderFormUpdated });
   };
@@ -134,7 +169,7 @@ export default class ContactData extends Component {
     }
 
     let form = (
-      <form>
+      <form onSubmit={this.orderHandler}>
         {formElementsArray.map(formElement => (
           <Input
             key={formElement.id}
@@ -144,9 +179,7 @@ export default class ContactData extends Component {
             changed={event => this.inputChangeHandler(event, formElement.id)}
           />
         ))}
-        <Button btnType="Success" clicked={this.orderHandler}>
-          ORDER
-        </Button>
+        <Button btnType="Success">ORDER</Button>
       </form>
     );
 
