@@ -5,19 +5,45 @@ import classes from './Input.module.css';
 const input = props => {
   let inputElement = null;
 
-  switch (props.inputtype) {
+  switch (props.elementType) {
     case 'input':
-      // Generate element with the inputType, and then, you
-      // can pass any HTML attribute to the element generator,
-      // and they will pass down through ...props.
-      // CAREFUL: html attributes should corresponde to the html element type.
-      inputElement = <input className={classes.InputElement} {...props} />;
+      // Inside props.elementConfig, there will be HTML tags
+      inputElement = (
+        <input
+          className={classes.InputElement}
+          {...props.elementConfig}
+          value={props.value}
+        />
+      );
       break;
     case 'textArea':
-      inputElement = <textarea className={classes.InputElement} {...props} />;
+      inputElement = (
+        <textarea
+          className={classes.InputElement}
+          {...props.elementConfig}
+          value={props.value}
+        />
+      );
+      break;
+    case 'select':
+      inputElement = (
+        <select className={classes.InputElement} value={props.value}>
+          {props.elementConfig.options.map(option => (
+            <option value={option.value} key={option.value}>
+              {option.displayValue}
+            </option>
+          ))}
+        </select>
+      );
       break;
     default:
-      inputElement = <input className={classes.InputElement} {...props} />;
+      inputElement = (
+        <input
+          className={classes.InputElement}
+          {...props.elementConfig}
+          value={props.value}
+        />
+      );
   }
 
   return (
