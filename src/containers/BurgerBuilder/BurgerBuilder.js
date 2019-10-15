@@ -1,4 +1,6 @@
 import React from 'react';
+import { connect } from 'react-redux'
+
 import Burger from '../../components/Burger/Burger'
 import BuildControls from '../../components/Burger/BuildControls/BuildControls'
 import Modal from '../../components/UI/Modal/Modal'
@@ -6,6 +8,7 @@ import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary'
 import axios from '../../api/axios-order'
 import Spinner from '../../components/UI/Spinner/Spinner'
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler'
+import * as actionTypes from '../../store/actions'
 
 // Statefull component where we will manage logic about building the burguer.
 
@@ -32,16 +35,16 @@ class BurgerBuilder extends React.Component {
         // If we pass ingredients to another component, we should first check if they exist.
         // Down in this file, se can see: if (this.state.ingredients) 
         // before passing ingredients to OrderSummary for example.
-        axios.get('https://burguer-builder-94096.firebaseio.com/ingredients.json')
-        .then(response => {
-            // This will load async. So if we have part of the UI that depends on
-            // this data, we should check if this exists before rendering them.
-            // If not, show spinner or whatever.
-            this.setState({ingredients : response.data})
-        })
-        .catch(err => {
-            this.setState({error:true})
-        })
+        // axios.get('https://burguer-builder-94096.firebaseio.com/ingredients.json')
+        // .then(response => {
+        //     // This will load async. So if we have part of the UI that depends on
+        //     // this data, we should check if this exists before rendering them.
+        //     // If not, show spinner or whatever.
+        //     this.setState({ingredients : response.data})
+        // })
+        // .catch(err => {
+        //     this.setState({error:true})
+        // })
     }
 
     // If there is at least one ingredient, we can proceed to checkout.
@@ -170,4 +173,17 @@ class BurgerBuilder extends React.Component {
     }
 }
 
-export default withErrorHandler(BurgerBuilder, axios)
+const mapStateToprops = state => {
+  return {
+    ingredients: state.ingredients
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onIngredientAdded = (ingredientName) => dispatch({type: actionTypes.ADD_INGREDIENT, ingredientName }),
+    onIngredientRemoved = (ingredientName) => dispatch({type: actionTypes.REMOVE_INGREDIENT, ingredientName }),
+  }
+}
+
+export default connect(mapStateToprops, mapDispatchToProps)(withErrorHandler(BurgerBuilder, axios))
