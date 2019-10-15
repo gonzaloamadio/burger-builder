@@ -39,13 +39,12 @@ class BurgerBuilder extends React.Component {
   }
 
   // If there is at least one ingredient, we can proceed to checkout.
-  // With this state, control if proceed button is disabled or not.
   updatePurchasableState = updatedIngredients => {
     let total = 0;
     for (let k in updatedIngredients) {
       total += updatedIngredients[k];
     }
-    this.setState({ purchasable: total > 0 });
+    return total > 0;
   };
 
   // Handler that manages proceed to checkout button click.
@@ -118,7 +117,8 @@ class BurgerBuilder extends React.Component {
             addIngredient={this.props.onIngredientAdded}
             removeIngredient={this.props.onIngredientRemoved}
             disabled={disableInfo}
-            purchasable={this.state.purchasable}
+            // We can manage the purchasable state in redux to, it is another option.
+            purchasable={this.updatePurchasableState(this.props.ingredients)}
             price={this.props.totalPrice}
             purchasing={this.purchaseHandler} // Use to show modal, change state
           />
