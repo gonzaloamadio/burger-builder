@@ -12,18 +12,9 @@ import * as actionTypes from '../../store/actions';
 
 // Statefull component where we will manage logic about building the burguer.
 
-const INGREDIENT_PRICES = {
-  salad: 0.5,
-  meat: 2,
-  cheese: 1.5,
-  bacon: 0.7
-};
-
 class BurgerBuilder extends React.Component {
   // The ingredients object keys, should match with the ones in BurguerIngredient.
   state = {
-    ingredients: null,
-    totalPrice: 0,
     purchasable: false, // Dis/Enable checkout button
     purchasing: false, // Are we checking out? Button clicked
     loading: false,
@@ -88,44 +79,12 @@ class BurgerBuilder extends React.Component {
       );
     }
     // THIS IS COMPLETELY WRONG, ONLY FOR TESTING PURPOSE
-    queryParams.push('price=' + this.state.totalPrice);
+    queryParams.push('price=' + this.props.totalPrice);
     const queryString = queryParams.join('&');
     this.props.history.push({
       pathname: '/checkout',
       search: '?' + queryString
     });
-  };
-
-  // Handler passed down to the controls, that add an ingredient.
-  addIngredientHandler = type => {
-    const updatedIngredients = {
-      ...this.state.ingredients
-    };
-    updatedIngredients[type] = updatedIngredients[type] + 1;
-    const newTotalPrice = this.state.totalPrice + INGREDIENT_PRICES[type];
-    this.setState({
-      totalPrice: newTotalPrice,
-      ingredients: updatedIngredients
-    });
-    // As React bundles this 2 setState methods, we need to pass ingredients
-    // as argument, if not it will make calculations with the old state.
-    this.updatePurchasableState(updatedIngredients);
-  };
-
-  // Handler passed down to the controls, that removes an ingredient.
-  removeIngredientHandler = type => {
-    const updatedIngredients = {
-      ...this.state.ingredients
-    };
-    if (updatedIngredients[type] > 0) {
-      updatedIngredients[type] = updatedIngredients[type] - 1;
-      const newTotalPrice = this.state.totalPrice - INGREDIENT_PRICES[type];
-      this.setState({
-        totalPrice: newTotalPrice,
-        ingredients: updatedIngredients
-      });
-    }
-    this.updatePurchasableState(updatedIngredients);
   };
 
   render() {
@@ -160,7 +119,7 @@ class BurgerBuilder extends React.Component {
             removeIngredient={this.props.onIngredientRemoved}
             disabled={disableInfo}
             purchasable={this.state.purchasable}
-            price={this.state.totalPrice}
+            price={this.props.totalPrice}
             purchasing={this.purchaseHandler} // Use to show modal, change state
           />
         </React.Fragment>
@@ -171,7 +130,7 @@ class BurgerBuilder extends React.Component {
           ingredients={this.props.ingredients}
           cancelled={this.purchaseCancelHandler}
           checkout={this.purchaseCheckoutHandler}
-          totalPrice={this.state.totalPrice}
+          totalPrice={this.props.totalPrice}
         />
       );
     }
@@ -197,7 +156,8 @@ class BurgerBuilder extends React.Component {
 
 const mapStateToprops = state => {
   return {
-    ingredients: state.ingredients
+    ingredients: state.ingredients,
+    totalPrice: state.totalPrice
   };
 };
 
