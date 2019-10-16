@@ -16,26 +16,14 @@ class BurgerBuilder extends React.Component {
   // The ingredients object keys, should match with the ones in BurguerIngredient.
   state = {
     purchasable: false, // Dis/Enable checkout button
-    purchasing: false, // Are we checking out? Button clicked
-    loading: false,
-    error: false
+    purchasing: false // Are we checking out? Button clicked
+    // We will manage this two with redux now.
+    // loading: false,
+    // error: false
   };
 
   componentDidMount() {
-    // Initialize ingredients from DB.
-    // If we pass ingredients to another component, we should first check if they exist.
-    // Down in this file, se can see: if (this.props.ingredients)
-    // before passing ingredients to OrderSummary for example.
-    // axios.get('https://burguer-builder-94096.firebaseio.com/ingredients.json')
-    // .then(response => {
-    //     // This will load async. So if we have part of the UI that depends on
-    //     // this data, we should check if this exists before rendering them.
-    //     // If not, show spinner or whatever.
-    //     this.setState({ingredients : response.data})
-    // })
-    // .catch(err => {
-    //     this.setState({error:true})
-    // })
+    this.props.onInitIngredients();
   }
 
   // If there is at least one ingredient, we can proceed to checkout.
@@ -78,7 +66,7 @@ class BurgerBuilder extends React.Component {
     // Are ingredients loaded? Set components that use them.
     // We should check this, because we are initializing from DB, we fetch them.
     let orderSummary = null;
-    let burger = this.state.error ? (
+    let burger = this.props.error ? (
       <p>Ingredients can not be retrieved.</p>
     ) : (
       <Spinner />
@@ -111,10 +99,6 @@ class BurgerBuilder extends React.Component {
       );
     }
 
-    if (this.state.loading) {
-      orderSummary = <Spinner />;
-    }
-
     return (
       <React.Fragment>
         {/* To show modal, we use css animation, and the prop passed to modal. */}
@@ -135,7 +119,8 @@ class BurgerBuilder extends React.Component {
 const mapStateToprops = state => {
   return {
     ingredients: state.ingredients,
-    totalPrice: state.totalPrice
+    totalPrice: state.totalPrice,
+    error: state.error
   };
 };
 
@@ -144,10 +129,12 @@ const mapDispatchToProps = dispatch => {
     onIngredientAdded: ingredientName =>
       dispatch(bbActions.addIngredient(ingredientName)),
     onIngredientRemoved: ingredientName =>
-      dispatch(bbActions.removeIngredient(ingredientName))
+      dispatch(bbActions.removeIngredient(ingredientName)),
+    onInitIngredients: () => dispatch(bbActions.initIngredients())
   };
 };
 
+// DESPITE we are using axions inside the actions, this still works.
 export default connect(
   mapStateToprops,
   mapDispatchToProps
