@@ -59,31 +59,7 @@ class BurgerBuilder extends React.Component {
 
   // From Seeing the order, to the real checkout.
   purchaseCheckoutHandler = () => {
-    // As this is part of the routable area of the project
-    // we have access to routers props: history, match.
-    // Only this one, that it is loaded through a Route
-    // component has the access. Nested components, for example
-    // burger, that is loaded in the render of this component,
-    // has no access to them. We have to pass them manually or
-    // with the withRouter HOC provided by react-router-dom.
-
-    const queryParams = [];
-    for (let i in this.props.ingredients) {
-      // Encode element so they can be used in a URL.
-      // Relevant for example for whitespaces, and so on.
-      queryParams.push(
-        encodeURIComponent(i) +
-          '=' +
-          encodeURIComponent(this.props.ingredients[i])
-      );
-    }
-    // THIS IS COMPLETELY WRONG, ONLY FOR TESTING PURPOSE
-    queryParams.push('price=' + this.props.totalPrice);
-    const queryString = queryParams.join('&');
-    this.props.history.push({
-      pathname: '/checkout',
-      search: '?' + queryString
-    });
+    this.props.history.push('/checkout');
   };
 
   render() {
@@ -153,6 +129,8 @@ class BurgerBuilder extends React.Component {
     );
   }
 }
+
+// ------------------ REDUX -------------------------
 
 const mapStateToprops = state => {
   return {

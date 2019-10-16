@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import Button from '../../../components/UI/Button/Button';
 import Spinner from '../../../components/UI/Spinner/Spinner';
@@ -6,7 +7,7 @@ import axios from '../../../api/axios-order';
 import classes from './ContactData.module.css';
 import Input from '../../../components/UI/Input/Input';
 
-export default class ContactData extends Component {
+class ContactData extends Component {
   state = {
     orderForm: {
       name: {
@@ -113,7 +114,7 @@ export default class ContactData extends Component {
 
     const order = {
       ingredients: this.props.ingredients,
-      price: this.props.price, // This should be calculated in server to avoid manipulation.
+      price: this.props.totalPrice,
       orderData: formData
     };
     // We need to add .json, cause of firebase.
@@ -173,7 +174,7 @@ export default class ContactData extends Component {
     updatedFormElement.touched = true;
     orderFormUpdated[inputIdentifier] = updatedFormElement;
 
-    const formIsValid = true;
+    let formIsValid = true;
     for (let key in orderFormUpdated) {
       // We should have this valid property in all elements, if not will be undefined.
       formIsValid = orderFormUpdated[key].valid && formIsValid;
@@ -223,3 +224,14 @@ export default class ContactData extends Component {
     );
   }
 }
+
+// ------------------ REDUX -------------------------
+
+const mapStateToprops = state => {
+  return {
+    ingredients: state.ingredients,
+    totalPrice: state.totalPrice
+  };
+};
+
+export default connect(mapStateToprops)(ContactData);
