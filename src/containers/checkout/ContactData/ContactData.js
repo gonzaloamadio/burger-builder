@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import Button from '../../../components/UI/Button/Button';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import axios from '../../../api/axios-order';
 import classes from './ContactData.module.css';
 import Input from '../../../components/UI/Input/Input';
+import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
+import * as reduxActions from '../../../store/actions';
 
-export default class ContactData extends Component {
+class ContactData extends Component {
   state = {
     orderForm: {
       name: {
@@ -93,7 +96,6 @@ export default class ContactData extends Component {
         validation: {}
       }
     },
-    loading: false,
     // Overall validity of form
     formIsValid: false
   };
@@ -102,32 +104,20 @@ export default class ContactData extends Component {
     // Prevent to send a request (default of a form)
     event.preventDefault();
 
-    this.setState({ loading: true });
-
     // We need to extract the values, that we have in our state. In value field.
     const formData = {};
     for (let key in this.state.orderForm) {
       // Transform to: {email: '<email_form_value>', . . . }
       formData[key] = this.state.orderForm[key].value;
     }
-
     const order = {
       ingredients: this.props.ingredients,
-      price: this.props.price, // This should be calculated in server to avoid manipulation.
+      price: this.props.totalPrice,
       orderData: formData
     };
-    // We need to add .json, cause of firebase.
-    axios
-      .post('/orders.json', order)
-      .then(response => {
-        console.log(response);
-        this.setState({ loading: false });
-        this.props.history.push('/');
-      })
-      .catch(error => {
-        console.log(error);
-        this.setState({ loading: false });
-      });
+
+    // Post order, and store in local redux state
+    this.props.onOrderBurger(order);
   };
 
   checkValidity(value, rules) {
@@ -173,7 +163,7 @@ export default class ContactData extends Component {
     updatedFormElement.touched = true;
     orderFormUpdated[inputIdentifier] = updatedFormElement;
 
-    const formIsValid = true;
+    let formIsValid = true;
     for (let key in orderFormUpdated) {
       // We should have this valid property in all elements, if not will be undefined.
       formIsValid = orderFormUpdated[key].valid && formIsValid;
@@ -211,7 +201,7 @@ export default class ContactData extends Component {
       </form>
     );
 
-    if (this.state.loading) {
+    if (this.props.loading) {
       form = <Spinner />;
     }
 
@@ -223,3 +213,24 @@ export default class ContactData extends Component {
     );
   }
 }
+
+// ------------------ REDUX -------------------------
+
+const mapStateToprops = state => {
+  return {
+    ingredients: state.burgerBuilder.ingredients,
+    totalPrice: state.burgerBuilder.totalPrice,
+    loading: state.order.loading
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onOrderBurger: orderData => dispatch(reduxActions.purchaseBurger(orderData))
+  };
+};
+
+export default connect(
+  mapStateToprops,
+  mapDispatchToProps
+)(withErrorHandler(ContactData, axios));

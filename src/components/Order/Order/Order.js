@@ -34,7 +34,7 @@ const order = props => {
       <p>
         {/* ParseFloat, convert string to number */}
         {/* Price <strong>AR: {Number.ParseFloat(props.price.toFixed(2))}</strong> */}
-        Price <strong>AR: {props.price}</strong>
+        Price <strong>AR: {props.price.toFixed(2)}</strong>
       </p>
     </div>
   );
