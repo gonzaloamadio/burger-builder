@@ -7,7 +7,7 @@ const initialState = {
   purchased: false
 };
 
-const purchaseBurgerSuccess = (state, actions) => {
+const purchaseBurgerSuccess = (state, action) => {
   const newOrder = {
     ...action.orderData,
     id: action.orderId
