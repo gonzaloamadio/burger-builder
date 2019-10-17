@@ -1,4 +1,5 @@
 import * as actionTypes from '../actions/actionTypes';
+import { updateObject } from '../utility';
 
 const initialState = {
   orders: [],
@@ -6,51 +7,48 @@ const initialState = {
   purchased: false
 };
 
+const purchaseBurgerSuccess = (state, actions) => {
+  const newOrder = {
+    ...action.orderData,
+    id: action.orderId
+  };
+  return updateObject(state, {
+    // Store orders in my orders, and set loading to false.
+    loading: false,
+    orders: state.orders.concat(newOrder), // TODO: Clean, we are not using it
+    purchased: true
+  });
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.PURCHASE_INIT:
-      return {
-        ...state,
+      return updateObject(state, {
         purchased: false
-      };
+      });
     case actionTypes.PURCHASE_BURGER_START:
-      return {
-        ...state,
+      return updateObject(state, {
         loading: false
-      };
+      });
     case actionTypes.PURCHASE_BURGER_SUCCESS:
-      const newOrder = {
-        ...action.orderData,
-        id: action.orderId
-      };
-      return {
-        // Store orders in my orders, and set loading to false.
-        ...state,
-        loading: false,
-        orders: state.orders.concat(newOrder), // TODO: Clean, we are not using it
-        purchased: true
-      };
+      return purchaseBurgerSuccess(state, action);
     case actionTypes.PURCHASE_BURGER_FAIL:
-      return {
-        ...state,
+      return updateObject(state, {
         loading: false
-      };
+      });
     case actionTypes.FETCH_ORDERS_START:
-      return {
-        ...state,
-        loading: true
-      };
-    case actionTypes.FETCH_ORDERS_FAIL:
-      return {
-        ...state,
+      return updateObject(state, {
         loading: false
-      };
+      });
+    case actionTypes.FETCH_ORDERS_FAIL:
+      return updateObject(state, {
+        loading: false
+      });
     case actionTypes.FETCH_ORDERS_SUCCESS:
-      return {
-        ...state,
+      return updateObject(state, {
         loading: false,
         orders: action.orders
-      };
+      });
     default:
       return state;
   }
