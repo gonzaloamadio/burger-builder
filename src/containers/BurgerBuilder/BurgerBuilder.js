@@ -8,7 +8,7 @@ import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import axios from '../../api/axios-order';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
-import * as bbActions from '../../store/actions';
+import * as reduxActions from '../../store/actions';
 
 // Statefull component where we will manage logic about building the burguer.
 
@@ -127,10 +127,10 @@ const mapStateToprops = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onIngredientAdded: ingredientName =>
-      dispatch(bbActions.addIngredient(ingredientName)),
+      dispatch(reduxActions.addIngredient(ingredientName)),
     onIngredientRemoved: ingredientName =>
-      dispatch(bbActions.removeIngredient(ingredientName)),
-    onInitIngredients: () => dispatch(bbActions.initIngredients())
+      dispatch(reduxActions.removeIngredient(ingredientName)),
+    onInitIngredients: () => dispatch(reduxActions.initIngredients())
   };
 };
 
