@@ -8,7 +8,7 @@ import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import axios from '../../api/axios-order';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
-import * as reduxActions from '../../store/actions';
+import * as actions from '../../store/actions';
 
 // Statefull component where we will manage logic about building the burguer.
 
@@ -47,6 +47,7 @@ class BurgerBuilder extends React.Component {
 
   // From Seeing the order, to the real checkout.
   purchaseCheckoutHandler = () => {
+    this.props.onInitPurchase();
     this.props.history.push('/checkout');
   };
 
@@ -127,10 +128,11 @@ const mapStateToprops = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onIngredientAdded: ingredientName =>
-      dispatch(reduxActions.addIngredient(ingredientName)),
+      dispatch(actions.addIngredient(ingredientName)),
     onIngredientRemoved: ingredientName =>
-      dispatch(reduxActions.removeIngredient(ingredientName)),
-    onInitIngredients: () => dispatch(reduxActions.initIngredients())
+      dispatch(actions.removeIngredient(ingredientName)),
+    onInitIngredients: () => dispatch(actions.initIngredients()),
+    onInitPurchase: () => dispatch(actions.purchaseInit())
   };
 };
 

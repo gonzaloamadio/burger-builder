@@ -4,18 +4,11 @@ import { connect } from 'react-redux';
 
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
 import ContactData from './ContactData/ContactData';
-import * as actions from '../../store/actions';
 
 // We want to have a summary of what the user is about to buy.
 // Button to cancel and go back, and another to continue.
 // When the user continue, we want to load the contact form.
 class Checkout extends Component {
-  componentDidMount() {
-    // Set a flag that we are purchasing. When we are not purchasing anymore,
-    // we redirect to somewhere
-    this.props.onInitPurchase();
-  }
-
   checkoutCancelledHandler = () => {
     this.props.history.goBack();
   };
@@ -62,13 +55,4 @@ const mapStateToprops = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    onInitPurchase: () => dispatch(actions.purchaseInit)
-  };
-};
-
-export default connect(
-  mapStateToprops,
-  mapDispatchToProps
-)(Checkout);
+export default connect(mapStateToprops)(Checkout);
