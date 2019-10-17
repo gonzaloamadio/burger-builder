@@ -7,6 +7,7 @@ import axios from '../../../api/axios-order';
 import classes from './ContactData.module.css';
 import Input from '../../../components/UI/Input/Input';
 import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
+import * as reduxActions from '../../../store/actions';
 
 class ContactData extends Component {
   state = {
@@ -95,7 +96,6 @@ class ContactData extends Component {
         validation: {}
       }
     },
-    loading: false,
     // Overall validity of form
     formIsValid: false
   };
@@ -115,7 +115,9 @@ class ContactData extends Component {
       price: this.props.totalPrice,
       orderData: formData
     };
-    // axios post
+
+    // Post order, and store in local redux state
+    this.props.onOrderBurger(order);
   };
 
   checkValidity(value, rules) {
@@ -199,7 +201,7 @@ class ContactData extends Component {
       </form>
     );
 
-    if (this.state.loading) {
+    if (this.props.loading) {
       form = <Spinner />;
     }
 
@@ -216,9 +218,19 @@ class ContactData extends Component {
 
 const mapStateToprops = state => {
   return {
-    ingredients: state.ingredients,
-    totalPrice: state.totalPrice
+    ingredients: state.burgerBuilder.ingredients,
+    totalPrice: state.burgerBuilder.totalPrice,
+    loading: state.order.loading
   };
 };
 
-export default connect(mapStateToprops)(withErrorHandler(ContactData, axios));
+const mapDispatchToProps = dispatch => {
+  return {
+    onOrderBurger: orderData => dispatch(reduxActions.purchaseBurger(orderData))
+  };
+};
+
+export default connect(
+  mapStateToprops,
+  mapDispatchToProps
+)(withErrorHandler(ContactData, axios));
