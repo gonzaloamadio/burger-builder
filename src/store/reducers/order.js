@@ -27,13 +27,29 @@ const reducer = (state = initialState, action) => {
         // Store orders in my orders, and set loading to false.
         ...state,
         loading: false,
-        orders: state.orders.concat(newOrder),
+        orders: state.orders.concat(newOrder), // TODO: Clean, we are not using it
         purchased: true
       };
     case actionTypes.PURCHASE_BURGER_FAIL:
       return {
         ...state,
         loading: false
+      };
+    case actionTypes.FETCH_ORDERS_START:
+      return {
+        ...state,
+        loading: true
+      };
+    case actionTypes.FETCH_ORDERS_FAIL:
+      return {
+        ...state,
+        loading: false
+      };
+    case actionTypes.FETCH_ORDERS_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        orders: action.orders
       };
     default:
       return state;
