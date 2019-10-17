@@ -4,11 +4,18 @@ import { connect } from 'react-redux';
 
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
 import ContactData from './ContactData/ContactData';
+import * as actions from '../../store/actions';
 
 // We want to have a summary of what the user is about to buy.
 // Button to cancel and go back, and another to continue.
 // When the user continue, we want to load the contact form.
 class Checkout extends Component {
+  componentDidMount() {
+    // Set a flag that we are purchasing. When we are not purchasing anymore,
+    // we redirect to somewhere
+    this.props.onInitPurchase();
+  }
+
   checkoutCancelledHandler = () => {
     this.props.history.goBack();
   };
@@ -18,10 +25,14 @@ class Checkout extends Component {
   };
 
   render() {
+    // If there are no ingredients, Redirect (for example if we enter checkout directly)
     let summary = <Redirect to="/" />;
+    // Redirect if we have finished purchasing (submit order form)
     if (this.props.ingredients) {
+      const purchased = this.props.purchased ? <Redirect to="/" /> : null;
       summary = (
         <div>
+          {purchased}
           <CheckoutSummary
             ingredients={this.props.ingredients}
             checkoutContinued={this.checkoutContinuedHandler}
@@ -33,14 +44,6 @@ class Checkout extends Component {
           <Route
             path={this.props.match.path + '/contact-data'}
             component={ContactData}
-            // We de NOT need this anymore, as we know we will have the data from redux
-            // render={props => (
-            //   <ContactData
-            //     ingredients={this.props.ingredients}
-            //     price={this.props.totalPrice}
-            //     {...props}
-            //   />
-            // )}
           />
         </div>
       );
@@ -54,8 +57,18 @@ class Checkout extends Component {
 const mapStateToprops = state => {
   return {
     ingredients: state.burgerBuilder.ingredients,
-    totalPrice: state.burgerBuilder.totalPrice
+    totalPrice: state.burgerBuilder.totalPrice,
+    purchased: state.order.purchased
   };
 };
 
-export default connect(mapStateToprops)(Checkout);
+const mapDispatchToProps = dispatch => {
+  return {
+    onInitPurchase: () => dispatch(actions.purchaseInit)
+  };
+};
+
+export default connect(
+  mapStateToprops,
+  mapDispatchToProps
+)(Checkout);

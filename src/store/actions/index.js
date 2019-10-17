@@ -1,7 +1,8 @@
 export {
   purchaseBurgerSuccess,
   purchaseBurgerFail,
-  purchaseBurger
+  purchaseBurger,
+  purchaseInit
 } from './order';
 export {
   addIngredient,

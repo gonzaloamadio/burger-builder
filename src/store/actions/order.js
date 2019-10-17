@@ -41,3 +41,11 @@ export const purchaseBurger = orderData => {
       });
   };
 };
+
+// Set a flag that we are purchasing. When we are not purchasing anymore,
+// we redirect to somewhere
+export const purchaseInit = () => {
+  return {
+    type: actionTypes.PURCHASE_INIT
+  };
+};
