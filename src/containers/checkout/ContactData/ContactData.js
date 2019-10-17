@@ -6,6 +6,8 @@ import Spinner from '../../../components/UI/Spinner/Spinner';
 import axios from '../../../api/axios-order';
 import classes from './ContactData.module.css';
 import Input from '../../../components/UI/Input/Input';
+import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
+import * as reduxActions from '../../../store/actions';
 
 class ContactData extends Component {
   state = {
@@ -94,7 +96,6 @@ class ContactData extends Component {
         validation: {}
       }
     },
-    loading: false,
     // Overall validity of form
     formIsValid: false
   };
@@ -103,32 +104,20 @@ class ContactData extends Component {
     // Prevent to send a request (default of a form)
     event.preventDefault();
 
-    this.setState({ loading: true });
-
     // We need to extract the values, that we have in our state. In value field.
     const formData = {};
     for (let key in this.state.orderForm) {
       // Transform to: {email: '<email_form_value>', . . . }
       formData[key] = this.state.orderForm[key].value;
     }
-
     const order = {
       ingredients: this.props.ingredients,
       price: this.props.totalPrice,
       orderData: formData
     };
-    // We need to add .json, cause of firebase.
-    axios
-      .post('/orders.json', order)
-      .then(response => {
-        console.log(response);
-        this.setState({ loading: false });
-        this.props.history.push('/');
-      })
-      .catch(error => {
-        console.log(error);
-        this.setState({ loading: false });
-      });
+
+    // Post order, and store in local redux state
+    this.props.onOrderBurger(order);
   };
 
   checkValidity(value, rules) {
@@ -212,7 +201,7 @@ class ContactData extends Component {
       </form>
     );
 
-    if (this.state.loading) {
+    if (this.props.loading) {
       form = <Spinner />;
     }
 
@@ -229,9 +218,19 @@ class ContactData extends Component {
 
 const mapStateToprops = state => {
   return {
-    ingredients: state.ingredients,
-    totalPrice: state.totalPrice
+    ingredients: state.burgerBuilder.ingredients,
+    totalPrice: state.burgerBuilder.totalPrice,
+    loading: state.order.loading
   };
 };
 
-export default connect(mapStateToprops)(ContactData);
+const mapDispatchToProps = dispatch => {
+  return {
+    onOrderBurger: orderData => dispatch(reduxActions.purchaseBurger(orderData))
+  };
+};
+
+export default connect(
+  mapStateToprops,
+  mapDispatchToProps
+)(withErrorHandler(ContactData, axios));

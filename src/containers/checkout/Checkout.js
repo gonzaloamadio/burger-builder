@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
@@ -18,30 +18,30 @@ class Checkout extends Component {
   };
 
   render() {
-    return (
-      <div>
-        <CheckoutSummary
-          ingredients={this.props.ingredients}
-          checkoutContinued={this.checkoutContinuedHandler}
-          checkoutCancelled={this.checkoutCancelledHandler}
-        />
-        {/* Depends on path we are + contact-data */}
-        {/* Despite we overwrite the url, state is not modified, so component
+    // If there are no ingredients, Redirect (for example if we enter checkout directly)
+    let summary = <Redirect to="/" />;
+    // Redirect if we have finished purchasing (submit order form)
+    if (this.props.ingredients) {
+      const purchased = this.props.purchased ? <Redirect to="/" /> : null;
+      summary = (
+        <div>
+          {purchased}
+          <CheckoutSummary
+            ingredients={this.props.ingredients}
+            checkoutContinued={this.checkoutContinuedHandler}
+            checkoutCancelled={this.checkoutCancelledHandler}
+          />
+          {/* Depends on path we are + contact-data */}
+          {/* Despite we overwrite the url, state is not modified, so component
          is not re rendered, and the summary stay the same. */}
-        <Route
-          path={this.props.match.path + '/contact-data'}
-          component={ContactData}
-          // We de NOT need this anymore, as we know we will have the data from redux
-          // render={props => (
-          //   <ContactData
-          //     ingredients={this.props.ingredients}
-          //     price={this.props.totalPrice}
-          //     {...props}
-          //   />
-          // )}
-        />
-      </div>
-    );
+          <Route
+            path={this.props.match.path + '/contact-data'}
+            component={ContactData}
+          />
+        </div>
+      );
+    }
+    return summary;
   }
 }
 
@@ -49,8 +49,9 @@ class Checkout extends Component {
 
 const mapStateToprops = state => {
   return {
-    ingredients: state.ingredients,
-    totalPrice: state.totalPrice
+    ingredients: state.burgerBuilder.ingredients,
+    totalPrice: state.burgerBuilder.totalPrice,
+    purchased: state.order.purchased
   };
 };
 
