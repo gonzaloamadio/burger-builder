@@ -42,8 +42,10 @@ export const auth = (email, password, isSignUp) => {
         dispatch(authSuccess(response.data));
       })
       .catch(err => {
-        console.log(err);
-        dispatch(authFail(err));
+        // console.log(err);
+        // err.response is the one we have to use (axios wrap wrap the response like this.)
+        // console.log(err.response);
+        dispatch(authFail(err.response.data.error));
       });
   };
 };
