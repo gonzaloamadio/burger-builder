@@ -9,9 +9,11 @@ export const authStart = () => {
 };
 
 export const authSuccess = authData => {
+  // TODO: Save refreshToken to make people stay logged in
   return {
     type: actionTypes.AUTH_SUCCESS,
-    authData: authData
+    idToken: authData.idToken,
+    userId: authData.localId
   };
 };
 
@@ -23,7 +25,6 @@ export const authFail = error => {
 };
 
 export const auth = (email, password, isSignUp) => {
-  // TODO: Get token from Backend, and finish rest of auth process.
   return dispatch => {
     dispatch(authStart());
     const authData = {
