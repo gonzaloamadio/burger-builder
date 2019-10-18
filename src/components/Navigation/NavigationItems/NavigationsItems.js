@@ -8,6 +8,7 @@ const NavigationsItems = props => (
       BurguerBuilder
     </NavigationItem>
     <NavigationItem link="/orders">Orders</NavigationItem>
+    <NavigationItem link="/auth">Authentication</NavigationItem>
   </ul>
 );
 
