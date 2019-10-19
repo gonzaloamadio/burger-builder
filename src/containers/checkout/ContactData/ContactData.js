@@ -117,7 +117,7 @@ class ContactData extends Component {
     };
 
     // Post order, and store in local redux state
-    this.props.onOrderBurger(order);
+    this.props.onOrderBurger(order, this.props.token);
   };
 
   checkValidity(value, rules) {
@@ -220,13 +220,15 @@ const mapStateToprops = state => {
   return {
     ingredients: state.burgerBuilder.ingredients,
     totalPrice: state.burgerBuilder.totalPrice,
-    loading: state.order.loading
+    loading: state.order.loading,
+    token: state.auth.token
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    onOrderBurger: orderData => dispatch(reduxActions.purchaseBurger(orderData))
+    onOrderBurger: (orderData, token) =>
+      dispatch(reduxActions.purchaseBurger(orderData, token))
   };
 };
 
