@@ -14,4 +14,4 @@ export {
   fetchIngredientsFailed
 } from './burgerBuilder';
 
-export { auth } from './auth';
+export { auth, authLogout } from './auth';
