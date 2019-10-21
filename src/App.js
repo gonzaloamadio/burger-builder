@@ -1,14 +1,26 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Route, Switch, withRouter, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import Layout from './hoc/Layout/Layout';
 import BurgerBuilder from './containers/BurgerBuilder/BurgerBuilder';
-import Checkout from './containers/checkout/Checkout';
-import Orders from './containers/Orders/Orders';
-import Auth from './containers/Auth/Auth';
 import Logout from './containers/Auth/Logout/Logout';
 import * as actions from './store/actions';
+
+// import Checkout from './containers/checkout/Checkout';
+const Checkout = React.lazy(() => import('./containers/checkout/Checkout'));
+// import Orders from './containers/Orders/Orders';
+const Orders = React.lazy(() => import('./containers/Orders/Orders'));
+// import Auth from './containers/Auth/Auth';
+const Auth = React.lazy(() => import('./containers/Auth/Auth'));
+
+function WaitingComponent(Component) {
+  return props => (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Component {...props} />
+    </Suspense>
+  );
+}
 
 class App extends React.Component {
   componentDidMount() {
@@ -18,7 +30,7 @@ class App extends React.Component {
   render() {
     let routes = (
       <Switch>
-        <Route path="/auth" component={Auth} />
+        <Route path="/auth" component={WaitingComponent(Auth)} />
         {/* exact is not neccessary but we leave it. */}
         <Route path="/" exact component={BurgerBuilder} />
         <Redirect to="/" />
@@ -28,11 +40,11 @@ class App extends React.Component {
     if (this.props.isAuthenticated) {
       routes = (
         <Switch>
-          <Route path="/checkout" component={Checkout} />
-          <Route path="/orders" component={Orders} />
+          <Route path="/checkout" component={WaitingComponent(Checkout)} />
+          <Route path="/orders" component={WaitingComponent(Orders)} />
           <Route path="/logout" component={Logout} />
           {/* We need the auth component, so login to finish purchase works */}
-          <Route path="/auth" component={Auth} />
+          <Route path="/auth" component={WaitingComponent(Auth)} />
           <Route path="/" exact component={BurgerBuilder} />
           <Redirect to="/" />
         </Switch>
