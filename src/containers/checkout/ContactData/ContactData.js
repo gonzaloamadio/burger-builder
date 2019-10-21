@@ -8,6 +8,7 @@ import classes from './ContactData.module.css';
 import Input from '../../../components/UI/Input/Input';
 import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
 import * as reduxActions from '../../../store/actions';
+import { updateObject } from '../../../shared/utility';
 
 class ContactData extends Component {
   state = {
@@ -147,22 +148,23 @@ class ContactData extends Component {
   // which element are we in. So we add the inputIdentifier param (the name does not matter)
   // and also we need to adjust how we pass this handler to the <Input> to an arrow function
   inputChangeHandler = (event, inputIdentifier) => {
-    const orderFormUpdated = {
-      // If we do this only, it will not be a deep clone. I.e. the nested elements will be not cloned
-      // but only the pointers, so if I change something there i will still mutate the original state.
-      // Because the object in my copied object and the object in the state would still be equal.
-      ...this.state.orderForm
-    };
-    // So we need to do this to. Clone again the second level, i.e. {OrderForm: {name: {THIS_ONE}, email:{THIS_ONE} }}
-    const updatedFormElement = { ...orderFormUpdated[inputIdentifier] };
-    updatedFormElement.value = event.target.value;
-    // Check validity, pass value and rules.
-    updatedFormElement.valid = this.checkValidity(
-      updatedFormElement.value,
-      updatedFormElement.validation
+    // Inmutably update the relevant element.
+    const updatedFormElement = updateObject(
+      this.state.orderForm[inputIdentifier],
+      {
+        value: event.target.value,
+        // Check validity, pass value and rules.
+        valid: this.checkValidity(
+          event.target.value,
+          this.state.orderForm[inputIdentifier].validation
+        ),
+        touched: true
+      }
     );
-    updatedFormElement.touched = true;
-    orderFormUpdated[inputIdentifier] = updatedFormElement;
+    // Inmutably update the relevant element in the state.
+    const orderFormUpdated = updateObject(this.state.orderForm, {
+      [inputIdentifier]: updatedFormElement
+    });
 
     let formIsValid = true;
     for (let key in orderFormUpdated) {
