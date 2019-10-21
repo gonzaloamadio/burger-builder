@@ -17,7 +17,11 @@ const rootReducer = combineReducers({
   order: orderReducer,
   auth: authReducer
 });
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+const composeEnhancers =
+  (process.env.NODE_ENV === 'development' &&
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
+  compose;
 // applyMiddleware takes a list of middlewares that are applied in order
 const store = createStore(
   rootReducer,
