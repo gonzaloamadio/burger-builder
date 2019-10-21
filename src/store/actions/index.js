@@ -5,6 +5,7 @@ export {
   purchaseInit,
   fetchOrders
 } from './order';
+
 export {
   addIngredient,
   removeIngredient,
@@ -12,3 +13,5 @@ export {
   setIngredients,
   fetchIngredientsFailed
 } from './burgerBuilder';
+
+export { auth, authLogout, setAuthRedirectPath, authCheckState } from './auth';
