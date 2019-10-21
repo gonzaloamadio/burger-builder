@@ -35,7 +35,7 @@ export const purchaseBurger = (orderData, token) => {
   return dispatch => {
     dispatch(purchaseBurgerStart());
     axios
-      .post('/orders.json?auth' + token, orderData)
+      .post('/orders.json?auth=' + token, orderData)
       .then(response => {
         console.log(response.data);
         dispatch(purchaseBurgerSuccess(response.data.name, orderData));
@@ -78,11 +78,15 @@ export const fetchOrdersStart = () => {
   };
 };
 
-export const fetchOrders = token => {
+export const fetchOrders = (token, userId) => {
   return dispatch => {
     dispatch(fetchOrdersStart());
+    // query params understood by firebase.
+    // orderBy="userId"&equalTo=  --> Sort and also filter
+    const queryParams =
+      '?auth=' + token + '&orderBy="userId"&equalTo="' + userId + '"';
     axios
-      .get('./orders.json?auth=' + token)
+      .get('./orders.json' + queryParams)
       .then(res => {
         // We receive a javascript Object. Json { firebase_id : {Order Data} }
         console.log('Mis ordenes', res.data);
