@@ -5,7 +5,8 @@ const initialState = {
   // Temporari initial state. Then should be initialized from DB.
   ingredients: null,
   totalPrice: 4,
-  error: false
+  error: false,
+  building: false // Si estamos construyendo alguna hamburguesa o no
 };
 
 const INGREDIENT_PRICES = {
@@ -26,7 +27,8 @@ const addIngredient = (state, action) => {
     state.totalPrice + INGREDIENT_PRICES[action.ingredientName];
   return updateObject(state, {
     ingredients: updatedIngredients,
-    totalPrice: updatedPrice
+    totalPrice: updatedPrice,
+    building: true
   });
 };
 
@@ -37,7 +39,8 @@ const removeIngredient = (state, action) => {
       ...state.ingredients,
       [action.ingredientName]: state.ingredients[action.ingredientName] - 1
     },
-    totalPrice: state.totalPrice - INGREDIENT_PRICES[action.ingredientName]
+    totalPrice: state.totalPrice - INGREDIENT_PRICES[action.ingredientName],
+    building: true
   };
 };
 
@@ -45,7 +48,8 @@ const setIngredients = (state, action) => {
   return updateObject(state, {
     ingredients: action.ingredients,
     error: false,
-    totalPrice: initialState['totalPrice']
+    totalPrice: initialState['totalPrice'],
+    building: false
   });
 };
 
