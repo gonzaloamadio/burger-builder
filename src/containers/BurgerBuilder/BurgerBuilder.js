@@ -12,7 +12,7 @@ import * as actions from '../../store/actions';
 
 // Statefull component where we will manage logic about building the burguer.
 
-class BurgerBuilder extends React.Component {
+export class BurgerBuilder extends React.Component {
   // The ingredients object keys, should match with the ones in BurguerIngredient.
   state = {
     purchasable: false, // Dis/Enable checkout button
