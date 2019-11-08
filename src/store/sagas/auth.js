@@ -1,6 +1,6 @@
 import * as actions from '../actions';
 // put will dispatch a new action
-import { put } from 'redux-saga/effects';
+import { put, delay } from 'redux-saga/effects';
 
 // action: action that was dispatched
 export function* logoutSaga(action) {
@@ -11,4 +11,9 @@ export function* logoutSaga(action) {
   yield localStorage.removeItem('expirationDate');
   yield localStorage.removeItem('userId');
   yield put(actions.logoutSucceed());
+}
+
+export function* checkAuthTimeoutSaga(action) {
+  yield delay(action.expirationTime * 1000);
+  yield put(actions.authLogout());
 }
