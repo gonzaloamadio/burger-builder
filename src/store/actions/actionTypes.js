@@ -18,6 +18,7 @@ export const PURCHASE_INIT = 'PURCHASE_INIT'; // Whenever we load checkout page
 export const PURCHASE_BURGER_START = 'PURCHASE_BURGER_START';
 export const PURCHASE_BURGER_SUCCESS = 'PURCHASE_BURGER_SUCCESS';
 export const PURCHASE_BURGER_FAIL = 'PURCHASE_BURGER_FAIL';
+export const PURCHASE_BURGER = 'PURCHASE_BURGER';
 
 // ----------------------------------------------------------------------------
 //                      GET ORDERS HISTORY
@@ -27,6 +28,7 @@ export const PURCHASE_BURGER_FAIL = 'PURCHASE_BURGER_FAIL';
 export const FETCH_ORDERS_START = 'FETCH_ORDERS_START';
 export const FETCH_ORDERS_SUCCESS = 'FETCH_ORDERS_SUCCESS';
 export const FETCH_ORDERS_FAIL = 'FETCH_ORDERS_FAIL';
+export const FETCH_ORDERS = 'FETCH_ORDERS';
 
 // ----------------------------------------------------------------------------
 //                      AUTHENTICATION

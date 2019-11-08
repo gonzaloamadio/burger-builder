@@ -1,5 +1,4 @@
 import * as actionTypes from './actionTypes';
-import axios from 'axios';
 
 // Set loading and other required variables
 export const authStart = () => {
@@ -41,14 +40,14 @@ export const logoutSucceed = () => {
 
 export const checkAuthTimeout = expirationTime => {
   return {
-    type: actionTypes.AUTH_CHECK_TIMEOUT,
+    type: actionTypes.AUTH_CHECK_TIMEOUT, // Call a saga
     expirationTime
   };
 };
 
 export const auth = (email, password, isSignUp) => {
   return {
-    type: actionTypes.AUTH_USER,
+    type: actionTypes.AUTH_USER, // Call a saga
     email,
     password,
     isSignUp
@@ -64,6 +63,6 @@ export const setAuthRedirectPath = path => {
 
 export const authCheckState = () => {
   return {
-    type: actionTypes.AUTH_CHECK_STATE
+    type: actionTypes.AUTH_CHECK_STATE // Call a saga
   };
 };

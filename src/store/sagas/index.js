@@ -8,6 +8,7 @@ import {
   authCheckStateSaga
 } from './auth';
 import { initIngredientsSaga } from './burgerBuilder';
+import { purchaseBurgerSaga, fetchOrdersSaga } from './order';
 
 export function* watchAuth() {
   // takeEvery takes the action we are listening to, and the saga that will be exec when that occurs.
@@ -20,4 +21,9 @@ export function* watchAuth() {
 
 export function* watchBurgerBuilder() {
   yield takeEvery(actionTypes.INIT_INGREDIENTS, initIngredientsSaga);
+}
+
+export function* watchOrder() {
+  yield takeEvery(actionTypes.PURCHASE_BURGER, purchaseBurgerSaga);
+  yield takeEvery(actionTypes.FETCH_ORDERS, fetchOrdersSaga);
 }
