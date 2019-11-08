@@ -7,6 +7,7 @@ import {
   authUserSaga,
   authCheckStateSaga
 } from './auth';
+import { initIngredientsSaga } from './burgerBuilder';
 
 export function* watchAuth() {
   // takeEvery takes the action we are listening to, and the saga that will be exec when that occurs.
@@ -15,4 +16,8 @@ export function* watchAuth() {
   yield takeEvery(actionTypes.AUTH_CHECK_TIMEOUT, checkAuthTimeoutSaga);
   yield takeEvery(actionTypes.AUTH_USER, authUserSaga);
   yield takeEvery(actionTypes.AUTH_CHECK_STATE, authCheckStateSaga);
+}
+
+export function* watchBurgerBuilder() {
+  yield takeEvery(actionTypes.INIT_INGREDIENTS, initIngredientsSaga);
 }
