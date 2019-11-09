@@ -1,6 +1,4 @@
 // Action creators for building a burger
-import axios from '../../api/axios-order';
-
 import * as actionTypes from './actionTypes';
 
 export const addIngredient = ingredientName => {
@@ -20,7 +18,7 @@ export const removeIngredient = ingredientName => {
 
 export const setIngredients = ingredients => {
   return {
-    type: actionTypes.SET_INGREDIENTS,
+    type: actionTypes.SET_INGREDIENTS, // Call a saga
     ingredients
   };
 };
@@ -31,14 +29,7 @@ export const fetchIngredientsFailed = () => {
 };
 
 export const initIngredients = () => {
-  return dispatch => {
-    axios
-      .get('https://burguer-builder-94096.firebaseio.com/ingredients.json')
-      .then(response => {
-        dispatch(setIngredients(response.data));
-      })
-      .catch(err => {
-        dispatch(fetchIngredientsFailed());
-      });
+  return {
+    type: actionTypes.INIT_INGREDIENTS
   };
 };
