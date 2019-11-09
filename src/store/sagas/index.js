@@ -1,5 +1,5 @@
 // will allow us to listen to certain actions and do something when they occur.
-import { takeEvery, all } from 'redux-saga/effects';
+import { takeEvery, all, takeLatest } from 'redux-saga/effects';
 import * as actionTypes from '../actions/actionTypes';
 import {
   logoutSaga,
@@ -25,6 +25,8 @@ export function* watchBurgerBuilder() {
 }
 
 export function* watchOrder() {
-  yield takeEvery(actionTypes.PURCHASE_BURGER, purchaseBurgerSaga);
+  // Cancel all ongoing exec of purchaseBurgeraga, and only exec last.
+  // So one process of the saga is going on at a given time
+  yield takeLatest(actionTypes.PURCHASE_BURGER, purchaseBurgerSaga);
   yield takeEvery(actionTypes.FETCH_ORDERS, fetchOrdersSaga);
 }
