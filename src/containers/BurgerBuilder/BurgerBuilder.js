@@ -1,33 +1,31 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
 
-import Burger from '../../components/Burger/Burger';
-import BuildControls from '../../components/Burger/BuildControls/BuildControls';
-import Modal from '../../components/UI/Modal/Modal';
-import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
-import axios from '../../api/axios-order';
-import Spinner from '../../components/UI/Spinner/Spinner';
-import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
-import * as actions from '../../store/actions';
+import Burger from "../../components/Burger/Burger";
+import BuildControls from "../../components/Burger/BuildControls/BuildControls";
+import Modal from "../../components/UI/Modal/Modal";
+import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
+import axios from "../../api/axios-order";
+import Spinner from "../../components/UI/Spinner/Spinner";
+import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
+import * as actions from "../../store/actions";
 
 // Statefull component where we will manage logic about building the burguer.
 
-export class BurgerBuilder extends React.Component {
+const BurgerBuilder = props => {
   // The ingredients object keys, should match with the ones in BurguerIngredient.
-  state = {
-    purchasable: false, // Dis/Enable checkout button
-    purchasing: false // Are we checking out? Button clicked
-    // We will manage this two with redux now.
-    // loading: false,
-    // error: false
-  };
+  const [purchasing, setPurchasing] = useState(false); // Are we checking out? Button clicked
+  // We will manage this two with redux now.
+  // loading: false,
+  // error: false
 
-  componentDidMount() {
-    this.props.onInitIngredients();
-  }
+  useEffect(() => {
+    props.onInitIngredients();
+    // eslint-disable-next-line
+  }, []);
 
   // If there is at least one ingredient, we can proceed to checkout.
-  updatePurchasableState = updatedIngredients => {
+  const updatePurchasableState = updatedIngredients => {
     let total = 0;
     for (let k in updatedIngredients) {
       total += updatedIngredients[k];
@@ -36,91 +34,86 @@ export class BurgerBuilder extends React.Component {
   };
 
   // Handler that manages proceed to checkout button click.
-  purchaseHandler = () => {
-    if (this.props.isAuthenticated) {
-      this.setState({ purchasing: true });
+  const purchaseHandler = () => {
+    if (props.isAuthenticated) {
+      setPurchasing(true);
     } else {
       // We store in redux the route to go after login in
-      this.props.onSetAuthRedirectPath('/checkout');
-      this.props.history.push('/auth');
+      props.onSetAuthRedirectPath("/checkout");
+      props.history.push("/auth");
     }
   };
 
   // Handle Click in Backdrop
-  purchaseCancelHandler = () => {
-    this.setState({ purchasing: false });
+  const purchaseCancelHandler = () => {
+    setPurchasing(false);
   };
 
   // From Seeing the order, to the real checkout.
-  purchaseCheckoutHandler = () => {
-    this.props.onInitPurchase();
-    this.props.history.push('/checkout');
+  const purchaseCheckoutHandler = () => {
+    props.onInitPurchase();
+    props.history.push("/checkout");
   };
 
-  render() {
-    const disableInfo = {
-      ...this.props.ingredients
-    };
-    // turns object values intro true or false, so we can know which
-    // remove ingredient button should be disabled.
-    // {salad:true, cheese:false,  ....}
-    for (let key in disableInfo) {
-      disableInfo[key] = disableInfo[key] <= 0;
-    }
+  const disableInfo = {
+    ...props.ingredients
+  };
+  // turns object values intro true or false, so we can know which
+  // remove ingredient button should be disabled.
+  // {salad:true, cheese:false,  ....}
+  for (let key in disableInfo) {
+    disableInfo[key] = disableInfo[key] <= 0;
+  }
 
-    // Is http beeing sent?
+  // Is http beeing sent?
 
-    // Are ingredients loaded? Set components that use them.
-    // We should check this, because we are initializing from DB, we fetch them.
-    let orderSummary = null;
-    let burger = this.props.error ? (
-      <p>Ingredients can not be retrieved.</p>
-    ) : (
-      <Spinner />
-    );
-    if (this.props.ingredients) {
-      burger = (
-        <React.Fragment>
-          <Burger ingredients={this.props.ingredients} /> ,
-          <BuildControls
-            // This dispatch actions, take argument, but here are only passed down on,
-            // So we have to check BuildControls to see if we are passing the required arguments.
-            addIngredient={this.props.onIngredientAdded}
-            removeIngredient={this.props.onIngredientRemoved}
-            disabled={disableInfo}
-            // We can manage the purchasable state in redux to, it is another option.
-            purchasable={this.updatePurchasableState(this.props.ingredients)}
-            price={this.props.totalPrice}
-            purchasing={this.purchaseHandler} // Use to show modal, change state
-            isAuth={this.props.isAuthenticated}
-          />
-        </React.Fragment>
-      );
-
-      orderSummary = (
-        <OrderSummary
-          ingredients={this.props.ingredients}
-          cancelled={this.purchaseCancelHandler}
-          checkout={this.purchaseCheckoutHandler}
-          totalPrice={this.props.totalPrice}
-        />
-      );
-    }
-
-    return (
+  // Are ingredients loaded? Set components that use them.
+  // We should check this, because we are initializing from DB, we fetch them.
+  let orderSummary = null;
+  let burger = props.error ? (
+    <p>Ingredients can not be retrieved.</p>
+  ) : (
+    <Spinner />
+  );
+  if (props.ingredients) {
+    burger = (
       <React.Fragment>
-        {/* To show modal, we use css animation, and the prop passed to modal. */}
-        <Modal
-          show={this.state.purchasing}
-          modalClosed={this.purchaseCancelHandler}
-        >
-          {orderSummary}
-        </Modal>
-        {burger}
+        <Burger ingredients={props.ingredients} /> ,
+        <BuildControls
+          // This dispatch actions, take argument, but here are only passed down on,
+          // So we have to check BuildControls to see if we are passing the required arguments.
+          addIngredient={props.onIngredientAdded}
+          removeIngredient={props.onIngredientRemoved}
+          disabled={disableInfo}
+          // We can manage the purchasable state in redux to, it is another option.
+          purchasable={updatePurchasableState(props.ingredients)}
+          price={props.totalPrice}
+          purchasing={purchaseHandler} // Use to show modal, change state
+          isAuth={props.isAuthenticated}
+        />
       </React.Fragment>
     );
+
+    orderSummary = (
+      <OrderSummary
+        ingredients={props.ingredients}
+        cancelled={purchaseCancelHandler}
+        checkout={purchaseCheckoutHandler}
+        totalPrice={props.totalPrice}
+      />
+    );
   }
-}
+
+  return (
+    <React.Fragment>
+      {/* To show modal, we use css animation, and the prop passed to modal. */}
+      <Modal show={purchasing} modalClosed={purchaseCancelHandler}>
+        {orderSummary}
+      </Modal>
+      {burger}
+    </React.Fragment>
+  );
+};
 
 // ------------------ REDUX -------------------------
 
