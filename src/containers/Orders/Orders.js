@@ -13,6 +13,7 @@ import Spinner from "../../components/UI/Spinner/Spinner";
 const Orders = props => {
   useEffect(() => {
     props.onFetchOrders(props.token, props.userId);
+    // eslint-disable-next-line
   }, []);
 
   let orders = <Spinner />;

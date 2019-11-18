@@ -18,6 +18,7 @@ const Auth = React.lazy(() => import("./containers/Auth/Auth"));
 const App = props => {
   useEffect(() => {
     props.onTryAutoSignUp();
+    // eslint-disable-next-line
   }, []);
 
   let routes = (
