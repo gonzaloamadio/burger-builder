@@ -5,10 +5,10 @@ import { connect } from "react-redux";
 import * as actions from "../../../store/actions";
 
 const Logout = props => {
+  const { onLogout } = props;
   useEffect(() => {
-    props.onLogout();
-    // eslint-disable-next-line
-  }, []);
+    onLogout();
+  }, [onLogout]);
 
   return <Redirect to="/" />;
 };

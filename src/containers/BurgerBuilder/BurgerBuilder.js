@@ -18,11 +18,11 @@ const BurgerBuilder = props => {
   // We will manage this two with redux now.
   // loading: false,
   // error: false
+  const { onInitIngredients } = props;
 
   useEffect(() => {
-    props.onInitIngredients();
-    // eslint-disable-next-line
-  }, []);
+    onInitIngredients();
+  }, [onInitIngredients]);
 
   // If there is at least one ingredient, we can proceed to checkout.
   const updatePurchasableState = updatedIngredients => {

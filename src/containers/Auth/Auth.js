@@ -42,13 +42,14 @@ const Auth = props => {
     }
   });
 
+  const { building, authRedirectPath, onSetAuthRedirectPath } = props;
+
   useEffect(() => {
     // Reset auth redirect path to / if we are not building a burger
-    if (!props.building && props.authRedirectPath !== "/") {
-      props.onSetAuthRedirectPath("/");
+    if (!building && authRedirectPath !== "/") {
+      onSetAuthRedirectPath("/");
     }
-    // eslint-disable-next-line
-  }, []);
+  }, [building, authRedirectPath, onSetAuthRedirectPath]);
 
   const inputChangedHandler = (event, controlName) => {
     // Clone "controls" object

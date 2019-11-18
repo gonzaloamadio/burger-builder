@@ -11,10 +11,10 @@ import Spinner from "../../components/UI/Spinner/Spinner";
 // We will create an Order component, that displays the information of an order.
 // We will fetch the orders from the backend, and display all of them.
 const Orders = props => {
+  const { onFetchOrders } = props;
   useEffect(() => {
-    props.onFetchOrders(props.token, props.userId);
-    // eslint-disable-next-line
-  }, []);
+    onFetchOrders(props.token, props.userId);
+  }, [onFetchOrders]);
 
   let orders = <Spinner />;
   if (!props.loading) {

@@ -16,10 +16,11 @@ const Orders = React.lazy(() => import("./containers/Orders/Orders"));
 const Auth = React.lazy(() => import("./containers/Auth/Auth"));
 
 const App = props => {
+  const { onTryAutoSignUp } = props;
+
   useEffect(() => {
-    props.onTryAutoSignUp();
-    // eslint-disable-next-line
-  }, []);
+    onTryAutoSignUp();
+  }, [onTryAutoSignUp]);
 
   let routes = (
     <Suspense fallback={<Spinner />}>
