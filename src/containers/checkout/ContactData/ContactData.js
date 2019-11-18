@@ -1,125 +1,123 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { useState } from "react";
+import { connect } from "react-redux";
 
-import Button from '../../../components/UI/Button/Button';
-import Spinner from '../../../components/UI/Spinner/Spinner';
-import axios from '../../../api/axios-order';
-import classes from './ContactData.module.css';
-import Input from '../../../components/UI/Input/Input';
-import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
-import * as reduxActions from '../../../store/actions';
-import { updateObject, checkValidity } from '../../../shared/utility';
+import Button from "../../../components/UI/Button/Button";
+import Spinner from "../../../components/UI/Spinner/Spinner";
+import axios from "../../../api/axios-order";
+import classes from "./ContactData.module.css";
+import Input from "../../../components/UI/Input/Input";
+import withErrorHandler from "../../../hoc/withErrorHandler/withErrorHandler";
+import * as reduxActions from "../../../store/actions";
+import { updateObject, checkValidity } from "../../../shared/utility";
 
-class ContactData extends Component {
-  state = {
-    orderForm: {
-      name: {
-        // Name of elementType, elementConfig props, are up to us.
-        // Here we use normal HTML element types, without < >
-        elementType: 'input',
-        // Define config, the normal attributes we can set up for the chosen html tag.
-        // Inside elementConfig, there must be HTML tags, because we spread them in Input.js
-        elementConfig: {
-          type: 'text',
-          placeholder: 'Your Name'
-        },
-        value: '',
-        validation: {
-          required: true
-        },
-        valid: false,
-        touched: false // flag to see if the element was in focus (so it does not start in red (invalid))
+const ContactData = props => {
+  const [orderForm, setOrderForm] = useState({
+    name: {
+      // Name of elementType, elementConfig props, are up to us.
+      // Here we use normal HTML element types, without < >
+      elementType: "input",
+      // Define config, the normal attributes we can set up for the chosen html tag.
+      // Inside elementConfig, there must be HTML tags, because we spread them in Input.js
+      elementConfig: {
+        type: "text",
+        placeholder: "Your Name"
       },
-      street: {
-        elementType: 'input',
-        elementConfig: {
-          type: 'text',
-          placeholder: 'Address'
-        },
-        value: '',
-        validation: {
-          required: true
-        },
-        valid: false,
-        touched: false
+      value: "",
+      validation: {
+        required: true
       },
-      email: {
-        elementType: 'input',
-        elementConfig: {
-          type: 'email',
-          placeholder: 'Your E-Mail'
-        },
-        value: '',
-        validation: {
-          required: true
-        },
-        valid: false,
-        touched: false
-      },
-      zipCode: {
-        elementType: 'input',
-        elementConfig: {
-          type: 'text',
-          placeholder: 'Postal Code'
-        },
-        value: '',
-        validation: {
-          required: true,
-          minLength: 5,
-          maxLength: 5
-        },
-        valid: false,
-        touched: false
-      },
-      country: {
-        elementType: 'input',
-        elementConfig: {
-          type: 'text',
-          placeholder: 'Country'
-        },
-        value: '',
-        validation: {
-          required: true
-        },
-        valid: false,
-        touched: false
-      },
-      deliveryMethod: {
-        elementType: 'select',
-        elementConfig: {
-          options: [
-            { value: 'fastest', displayValue: 'Fastest' },
-            { value: 'cheapest', displayValue: 'Cheapest' }
-          ]
-        },
-        value: 'fastest',
-        valid: true,
-        validation: {}
-      }
+      valid: false,
+      touched: false // flag to see if the element was in focus (so it does not start in red (invalid))
     },
-    // Overall validity of form
-    formIsValid: false
-  };
+    street: {
+      elementType: "input",
+      elementConfig: {
+        type: "text",
+        placeholder: "Address"
+      },
+      value: "",
+      validation: {
+        required: true
+      },
+      valid: false,
+      touched: false
+    },
+    email: {
+      elementType: "input",
+      elementConfig: {
+        type: "email",
+        placeholder: "Your E-Mail"
+      },
+      value: "",
+      validation: {
+        required: true
+      },
+      valid: false,
+      touched: false
+    },
+    zipCode: {
+      elementType: "input",
+      elementConfig: {
+        type: "text",
+        placeholder: "Postal Code"
+      },
+      value: "",
+      validation: {
+        required: true,
+        minLength: 5,
+        maxLength: 5
+      },
+      valid: false,
+      touched: false
+    },
+    country: {
+      elementType: "input",
+      elementConfig: {
+        type: "text",
+        placeholder: "Country"
+      },
+      value: "",
+      validation: {
+        required: true
+      },
+      valid: false,
+      touched: false
+    },
+    deliveryMethod: {
+      elementType: "select",
+      elementConfig: {
+        options: [
+          { value: "fastest", displayValue: "Fastest" },
+          { value: "cheapest", displayValue: "Cheapest" }
+        ]
+      },
+      value: "fastest",
+      valid: true,
+      validation: {}
+    }
+  });
 
-  orderHandler = event => {
+  const [formIsValid, setFormIsValid] = useState(false);
+
+  const orderHandler = event => {
     // Prevent to send a request (default of a form)
     event.preventDefault();
 
     // We need to extract the values, that we have in our state. In value field.
     const formData = {};
-    for (let key in this.state.orderForm) {
+    for (let key in orderForm) {
       // Transform to: {email: '<email_form_value>', . . . }
-      formData[key] = this.state.orderForm[key].value;
+      formData[key] = orderForm[key].value;
     }
     const order = {
-      ingredients: this.props.ingredients,
-      price: this.props.totalPrice,
+      ingredients: props.ingredients,
+      price: props.totalPrice,
       orderData: formData,
-      userId: this.props.userId
+      userId: props.userId
     };
 
     // Post order, and store in local redux state
-    this.props.onOrderBurger(order, this.props.token);
+    props.onOrderBurger(order, props.token);
   };
 
   // This method is attached to an event listener (input element).
@@ -128,22 +126,19 @@ class ContactData extends Component {
   // Also we need two way binding to update the input, so we need to know
   // which element are we in. So we add the inputIdentifier param (the name does not matter)
   // and also we need to adjust how we pass this handler to the <Input> to an arrow function
-  inputChangeHandler = (event, inputIdentifier) => {
+  const inputChangeHandler = (event, inputIdentifier) => {
     // Inmutably update the relevant element.
-    const updatedFormElement = updateObject(
-      this.state.orderForm[inputIdentifier],
-      {
-        value: event.target.value,
-        // Check validity, pass value and rules.
-        valid: checkValidity(
-          event.target.value,
-          this.state.orderForm[inputIdentifier].validation
-        ),
-        touched: true
-      }
-    );
+    const updatedFormElement = updateObject(orderForm[inputIdentifier], {
+      value: event.target.value,
+      // Check validity, pass value and rules.
+      valid: checkValidity(
+        event.target.value,
+        orderForm[inputIdentifier].validation
+      ),
+      touched: true
+    });
     // Inmutably update the relevant element in the state.
-    const orderFormUpdated = updateObject(this.state.orderForm, {
+    const orderFormUpdated = updateObject(orderForm, {
       [inputIdentifier]: updatedFormElement
     });
 
@@ -153,50 +148,49 @@ class ContactData extends Component {
       formIsValid = orderFormUpdated[key].valid && formIsValid;
     }
 
-    this.setState({ orderForm: orderFormUpdated, formIsValid });
+    setOrderForm(orderFormUpdated);
+    setFormIsValid(formIsValid);
   };
 
-  render() {
-    const formElementsArray = [];
-    for (let key in this.state.orderForm) {
-      formElementsArray.push({
-        id: key, // name
-        config: this.state.orderForm[key] // {elementType: 'input', elementConfig ... }
-      });
-    }
-
-    let form = (
-      <form onSubmit={this.orderHandler}>
-        {formElementsArray.map(formElement => (
-          <Input
-            key={formElement.id}
-            elementType={formElement.config.elementType}
-            elementConfig={formElement.config.elementConfig}
-            value={formElement.config.value}
-            invalid={!formElement.config.valid}
-            shouldValidate={formElement.config.validation}
-            touched={formElement.config.touched}
-            changed={event => this.inputChangeHandler(event, formElement.id)}
-          />
-        ))}
-        <Button btnType="Success" disabled={!this.state.formIsValid}>
-          ORDER
-        </Button>
-      </form>
-    );
-
-    if (this.props.loading) {
-      form = <Spinner />;
-    }
-
-    return (
-      <div className={classes.ContactData}>
-        <h4>Enter your contact data</h4>
-        {form}
-      </div>
-    );
+  const formElementsArray = [];
+  for (let key in orderForm) {
+    formElementsArray.push({
+      id: key, // name
+      config: orderForm[key] // {elementType: 'input', elementConfig ... }
+    });
   }
-}
+
+  let form = (
+    <form onSubmit={orderHandler}>
+      {formElementsArray.map(formElement => (
+        <Input
+          key={formElement.id}
+          elementType={formElement.config.elementType}
+          elementConfig={formElement.config.elementConfig}
+          value={formElement.config.value}
+          invalid={!formElement.config.valid}
+          shouldValidate={formElement.config.validation}
+          touched={formElement.config.touched}
+          changed={event => inputChangeHandler(event, formElement.id)}
+        />
+      ))}
+      <Button btnType="Success" disabled={!formIsValid}>
+        ORDER
+      </Button>
+    </form>
+  );
+
+  if (props.loading) {
+    form = <Spinner />;
+  }
+
+  return (
+    <div className={classes.ContactData}>
+      <h4>Enter your contact data</h4>
+      {form}
+    </div>
+  );
+};
 
 // ------------------ REDUX -------------------------
 
