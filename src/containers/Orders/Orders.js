@@ -1,34 +1,32 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect } from "react";
+import { connect } from "react-redux";
 
-import Order from '../../components/Order/Order/Order';
-import axios from '../../api/axios-order';
-import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
-import * as actions from '../../store/actions';
-import Spinner from '../../components/UI/Spinner/Spinner';
+import Order from "../../components/Order/Order/Order";
+import axios from "../../api/axios-order";
+import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
+import * as actions from "../../store/actions";
+import Spinner from "../../components/UI/Spinner/Spinner";
 
 // We want to display my orders in this page.
 // We will create an Order component, that displays the information of an order.
 // We will fetch the orders from the backend, and display all of them.
-class Orders extends Component {
-  componentDidMount() {
-    this.props.onFetchOrders(this.props.token, this.props.userId);
-  }
+const Orders = props => {
+  useEffect(() => {
+    props.onFetchOrders(props.token, props.userId);
+  }, []);
 
-  render() {
-    let orders = <Spinner />;
-    if (!this.props.loading) {
-      orders = this.props.orders.map(order => (
-        <Order
-          key={order.id}
-          ingredients={order.ingredients}
-          price={order.price}
-        />
-      ));
-    }
-    return <div>{orders}</div>;
+  let orders = <Spinner />;
+  if (!props.loading) {
+    orders = props.orders.map(order => (
+      <Order
+        key={order.id}
+        ingredients={order.ingredients}
+        price={order.price}
+      />
+    ));
   }
-}
+  return <div>{orders}</div>;
+};
 
 // ------------------ REDUX -------------------------
 
