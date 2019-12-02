@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/gonzaloamadio/burger-builder.svg?branch=master)](https://travis-ci.org/gonzaloamadio/burger-builder)
+
 ## DEMO
 
 You can find a demo of this project in: http://burger-builder.gamadio.surge.sh/

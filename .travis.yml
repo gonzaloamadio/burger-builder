@@ -12,5 +12,7 @@ deploy:
   cleanup: true
   domain: http://burger-builder.gamadio.surge.sh/
   project: ./build/
-on:
-  branch: master
+branches:
+  only:
+  - master
+
