@@ -21,7 +21,7 @@ export default axios => {
       /* Set up axios listener. Set up global interceptor
         which allow us to handle errors.
 
-        ARGS: 
+        ARGS:
             - response handler. Take res and return it.
             - Error obj, that is coming from API query.
           */
@@ -41,6 +41,7 @@ export default axios => {
       axios.interceptors.request.eject(reqInterceptor);
       axios.interceptors.response.eject(resInterceptor);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reqInterceptor, resInterceptor]);
 
   const errorConfirmationHandler = () => {

@@ -14,6 +14,7 @@ const Orders = props => {
   const { onFetchOrders } = props;
   useEffect(() => {
     onFetchOrders(props.token, props.userId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onFetchOrders]);
 
   let orders = <Spinner />;
